@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Studio 4 Holland · designtokens
+   Gedestilleerd uit de oude Kirby-site (assets/css/st4hl.css) en opgefrist.
+   Eén bron voor kleur, letter, ruimte en vorm; global.css en deck.css gebruiken alleen deze namen.
+   Overzicht met voorbeelden: /designsystem/ (niet in zoekmachines).
+   ========================================================================== */
+:root{
+  /* ── Oranje: de "4" uit het logo (oud: --st4hl-red hsla(19,100%,48%)) ── */
+  --oranje-300:#ff8a52;              /* hover op donker, links */
+  --oranje-400:#ff6d29;              /* oud: --st4hl-red-light hsla(19,100%,58%) */
+  --oranje-500:#f54e00;              /* hoofdkleur: tabs, knoppen, accenten */
+  --oranje-600:#c23d00;              /* ingedrukt, rand van oranje toetsen */
+  --oranje-700:#8a2b00;
+
+  /* ── Grafiet: de zwarte kast van een SL1200 (oud: #1e1e1e, #0e0e0e, #000, #3e3e3e) ── */
+  --zwart:#000;                      /* kaarten en panelen (oud: --color-base) */
+  --grafiet-950:#0b0b0c;
+  --grafiet-900:#0e0e0e;             /* teaser-achtergrond (oud: --color-background-teaser) */
+  --grafiet-850:#141415;
+  --grafiet-800:#1e1e1e;             /* pagina-achtergrond (oud: --color-background) */
+  --grafiet-700:#2e2e2e;
+  --grafiet-600:#3e3e3e;             /* toetsen, labels (oud: de grijze knoppen) */
+  --grafiet-500:#4e4e4e;
+  --grafiet-400:#7e7e7e;             /* gedempte tekst */
+  --grafiet-300:#a3a3a3;
+  --grafiet-200:#d4d4d4;             /* zachte tekst */
+  --wit:#ffffff;
+
+  /* ── Signaalkleuren ── */
+  --groen-500:#23b316;               /* "Bel ons voor de prijs" (oud: rgba(35,179,22)) */
+  --groen-700:#03690a;
+  --amber-400:#fbae3c;               /* oud: --color-border; nu de focusring en het VU-lampje */
+  --rood-600:#b81717;                /* foutmeldingen */
+
+  /* ── Metaal en lijnwerk ── */
+  --chroom:#c9ccd0;
+  --chroom-licht:#eceef0;
+  --artwork:#909090;                 /* kleur van de lijntekeningen (speaker, draaitafel) */
+
+  /* ── LED's op de toetsen ── */
+  --led-uit:#3a2418;
+  --led-aan:#ff7a2a;
+  --led-gloed:rgba(255,110,30,.75);
+
+  /* ── Rollen (gebruik deze in componenten) ── */
+  --bg:var(--grafiet-800);
+  --paneel:var(--zwart);
+  --paneel-2:var(--grafiet-900);
+  --lijn:#2a2a2b;
+  --lijn-sterk:#3a3a3c;
+  --tekst:#f4f2ef;
+  --tekst-zacht:var(--grafiet-200);
+  --tekst-gedempt:#9d9a96;
+  --accent:var(--oranje-500);
+  --accent-tekst:var(--wit);
+  --focus:var(--amber-400);
+
+  /* ── Letter: Lato zoals op de oude site; IBM Plex Mono voor tellers en serienummers ── */
+  --font:"Lato",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --fs-xs:.78rem;
+  --fs-s:.9rem;
+  --fs-m:1.0625rem;
+  --fs-l:clamp(1.25rem,1.1rem + .6vw,1.5rem);
+  --fs-xl:clamp(1.6rem,1.3rem + 1.4vw,2.3rem);
+  --fs-xxl:clamp(2.1rem,1.5rem + 3vw,3.6rem);
+  --lh-tekst:1.65;
+
+  /* ── Ruimte (4-punts schaal) en vorm ── */
+  --r-1:4px; --r-2:8px; --r-3:12px; --r-4:16px; --r-5:24px; --r-6:32px; --r-7:48px; --r-8:72px;
+  --rond-s:4px;                      /* toetsen */
+  --rond-m:8px;                      /* kaarten, foto's */
+  --rond-l:14px;                     /* panelen */
+  --rond-pil:999px;                  /* taalkeuze en chips op de oude site */
+  --gutter:clamp(16px,4vw,40px);
+  --max:1240px;
+
+  /* ── Diepte: toetsen en panelen ── */
+  --toets-bg:linear-gradient(#3a3b3f,#26272a 55%,#1d1e20);
+  --toets-bg-hover:linear-gradient(#424347,#2b2c2f 55%,#212224);
+  --toets-bg-in:linear-gradient(#1b1c1e,#232427);
+  --toets-schaduw:inset 0 1px 0 rgba(255,255,255,.16),0 3px 0 #050505,0 5px 10px rgba(0,0,0,.5);
+  --toets-schaduw-in:inset 0 2px 4px rgba(0,0,0,.6),0 1px 0 #050505;
+  --paneel-schaduw:0 1px 0 rgba(255,255,255,.04) inset,0 24px 48px -24px rgba(0,0,0,.8);
+  --geborsteld:repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 1px,transparent 1px 3px);
+
+  /* ── Beweging ── */
+  --snel:.15s;
+  --ease:cubic-bezier(.3,.7,.2,1);
+}

@@ -1,0 +1,42 @@
+---
+// Footer met de gegevens op een typeplaatje, zoals op de achterkant van een apparaat.
+import Icon from "./Icon.astro";
+import ContactKnoppen from "./ContactKnoppen.astro";
+import { site } from "../data/site";
+import { t, w, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const jaar = new Date().getFullYear();
+---
+<footer class="voet">
+  <div class="voet-in">
+    <div class="voet-cta">
+      <p class="voet-kop">{t(lang, "Een vraag, een reparatie of iets op maat?", "A question, a repair or something bespoke?")}</p>
+      <ContactKnoppen lang={lang} />
+    </div>
+
+    <div class="plaatje" role="group" aria-label={t(lang, "Bedrijfsgegevens", "Company details")}>
+      <span class="schroef" aria-hidden="true"></span><span class="schroef" aria-hidden="true"></span>
+      <span class="schroef" aria-hidden="true"></span><span class="schroef" aria-hidden="true"></span>
+      <p class="plaatje-merk">STUDIO 4 HOLLAND</p>
+      <p class="plaatje-model">Model S4H-{site.since} · {t(lang, "Handgemaakt in Nijkerk", "Hand built in Nijkerk")} · Holland</p>
+      <dl class="plaatje-rij">
+        <div><dt>{t(lang, "Adres", "Address")}</dt><dd>{site.street}, {site.zip} {site.city}</dd></div>
+        <div><dt>{w(lang, "email")}</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>
+        <div><dt>{w(lang, "phone")}</dt><dd><a href={site.phoneHref}>{site.phone}</a></dd></div>
+        <div><dt>KVK</dt><dd class="mono">{site.kvk}</dd></div>
+        <div><dt>{t(lang, "BTW", "VAT")}</dt><dd class="mono">{site.btw}</dd></div>
+      </dl>
+      <p class="plaatje-klein">
+        <span class="ce" aria-hidden="true">CE</span>
+        <span><Icon name="recycle" size={14} /> {w(lang, "eco")}</span>
+        <span>230V ~ 50Hz</span>
+      </p>
+    </div>
+
+    <p class="voet-copy">
+      © 2015–{jaar} Studio 4 Holland · {w(lang, "madeBy")} <a href="https://createfromcore.nl" rel="noopener">Create From Core</a>
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,101 @@
+---
+import Base from "../layouts/Base.astro";
+import Deck from "../components/Deck.astro";
+import Kaart from "../components/Kaart.astro";
+import Icon from "../components/Icon.astro";
+import ContactKnoppen from "../components/ContactKnoppen.astro";
+import Foto from "../components/Foto.astro";
+import { Image } from "astro:assets";
+import speakerLijn from "../assets/speaker-lijn.png";
+import { getSection, getItemsById, renderBody } from "../lib/content";
+import { SECTION_ICON, site } from "../data/site";
+import { t, w, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const home = (await getSection("home", lang))!;
+const { Content } = await renderBody(home);
+const featured = home.nl.data.featured ?? {};
+const lijst = async (key: string) => {
+  const f = featured[key];
+  return f ? (await getItemsById(f.items, lang)).slice(0, f.max) : [];
+};
+const teKoop = await lijst("forSale");
+const rijen = await Promise.all(
+  ["turntables", "speakers", "connections", "interiors"].map(async (key) => ({ key, sectie: await getSection(key, lang), items: await lijst(key) })),
+);
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: site.name,
+  url: site.url,
+  email: site.email,
+  telephone: site.phone.replace(/\s/g, ""),
+  image: new URL("/icon-512.png", site.url).href,
+  foundingDate: String(site.since),
+  founder: { "@type": "Person", name: site.owner },
+  address: { "@type": "PostalAddress", streetAddress: site.street, postalCode: site.zip, addressLocality: site.city, addressCountry: "NL" },
+  description: site.description[lang],
+};
+---
+<Base lang={lang} description={home.metaDescription ?? site.description[lang]} alt={home.alt} current="home" schema={schema}>
+  <section class="held">
+    <div class="wrap held-raster">
+      <div class="held-tekst">
+        <p class="mono" style="color:var(--oranje-300);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px">
+          Studio 4 Holland · Nijkerk · {t(lang, "sinds", "since")} {site.since}
+        </p>
+        <h1>{t(lang, "Technics-reparatie, custom draaitafels en ", "Technics repair, custom turntables and ")}<em>{t(lang, "speakers op maat", "bespoke speakers")}</em></h1>
+        <p class="intro">{home.metaDescription ?? site.description[lang]}</p>
+        <ContactKnoppen lang={lang} />
+      </div>
+      <div class="held-deck">
+        <Deck lang={lang} />
+        <p class="deck-uitleg">{t(lang, "Druk op Start/Stop, kies 33 of 45 en speel met de pitch.", "Press Start/Stop, pick 33 or 45 and play with the pitch.")}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sectie" style="padding-top:0">
+    <div class="wrap">
+      <h2 class="tab"><Icon name="home" size={20} />{home.title}</h2>
+      <div class="paneel welkom-raster">
+        <div class="proza"><Content /></div>
+        {teKoop.length > 0 && (
+          <aside class="te-koop" aria-labelledby="te-koop-kop">
+            <div class="te-koop-kop">
+              <h2 id="te-koop-kop"><i class="led" aria-hidden="true"></i>{w(lang, "forSale")}</h2>
+              <a class="knop knop-groen" href={site.phoneHref} style="min-height:38px;padding:7px 12px;font-size:.85rem"><Icon name="phone" size={16} />{w(lang, "callForPrice")}</a>
+            </div>
+            <ul class="te-koop-lijst">
+              {teKoop.map((i) => (
+                <li class="te-koop-item">
+                  <a href={i.url}>
+                    {(i.cover ?? i.photos[0]?.src) && <Foto src={(i.cover ?? i.photos[0].src)!} alt="" sizes="96px" widths={[192]} />}
+                    <span><b>{i.title}</b>{i.excerpt && <small>{i.excerpt.slice(0, 70)}{i.excerpt.length > 70 ? " …" : ""}</small>}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {rijen.filter((r) => r.sectie && r.items.length).map((r) => (
+    <section class="sectie">
+      <div class="wrap">
+        <div class="sectie-kop">
+          <h2><Icon name={SECTION_ICON[r.key]} size={28} />{r.sectie!.title}</h2>
+          <a href={r.sectie!.url}>{w(lang, "all")} <Icon name="arrow" size={16} /></a>
+        </div>
+        <ul class="kaarten">
+          {r.items.map((i) => <li><Kaart item={i} sizes="(min-width: 1240px) 400px, (min-width: 700px) 45vw, 100vw" /></li>)}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <div class="artwork artwork-speaker" aria-hidden="true"><Image src={speakerLijn} alt="" width={438} /></div>
+</Base>

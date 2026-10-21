@@ -1,0 +1,27 @@
+---
+// Terug naar boven: de Start/Stop-toets van een SL1200 rechtsonder. Verschijnt pas na wat scrollen.
+import { w, type Lang } from "../i18n";
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<a class="terug" href="#inhoud" aria-label={w(lang, "backToTop")} hidden>
+  <span class="terug-led" aria-hidden="true"></span>
+  <span class="terug-tekst" aria-hidden="true">Start<br />Stop</span>
+</a>
+<script>
+  const knop = document.querySelector<HTMLAnchorElement>(".terug");
+  if (knop) {
+    knop.hidden = false;
+    const zet = () => knop.classList.toggle("zicht", scrollY > innerHeight * 0.8);
+    addEventListener("scroll", zet, { passive: true });
+    zet();
+    knop.addEventListener("click", (e) => {
+      e.preventDefault();
+      knop.classList.add("druk");
+      setTimeout(() => knop.classList.remove("druk"), 220);
+      const stil = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scrollTo({ top: 0, behavior: stil ? "auto" : "smooth" });
+      document.getElementById("inhoud")?.focus({ preventScroll: true });
+    });
+  }
+</script>

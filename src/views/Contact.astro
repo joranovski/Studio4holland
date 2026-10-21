@@ -1,0 +1,44 @@
+---
+// Contact: de tekst uit de content, adres en het formulier (Netlify Forms; vervangt de Uniform-plugin van Kirby).
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { getSection, renderBody } from "../lib/content";
+import { site } from "../data/site";
+import { t, w, thanksPath, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const page = (await getSection("contact", lang))!;
+const { Content } = await renderBody(page);
+---
+<Base lang={lang} title={page.title} description={page.excerpt || undefined} alt={page.alt} current="contact">
+  <section class="sectie">
+    <div class="wrap">
+      <h1 class="tab"><Icon name="card" size={26} />{page.title}</h1>
+      <div class="paneel contact-raster">
+        <div>
+          <div class="proza"><Content /></div>
+          <address class="adres">
+            <a href={`mailto:${site.email}`}><Icon name="mail" size={20} />{site.email}</a>
+            <a href={site.phoneHref}><Icon name="phone" size={20} />{site.phone}</a>
+            <span style="display:inline-flex;gap:10px;align-items:center"><Icon name="home" size={20} class="icon" />{site.street}, {site.zip} {site.city}</span>
+          </address>
+        </div>
+
+        <form class="formulier" name="contact" method="POST" action={thanksPath(lang)} data-netlify="true" netlify-honeypot="bot-veld">
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="taal" value={lang} />
+          <p class="visually-hidden"><label>{t(lang, "Niet invullen", "Leave empty")} <input name="bot-veld" tabindex="-1" autocomplete="off" /></label></p>
+          <label class="veld"><span class="veld-label">{w(lang, "name")}</span><input name="naam" required autocomplete="name" /></label>
+          <label class="veld"><span class="veld-label">{w(lang, "email")}</span><input name="email" type="email" required autocomplete="email" /></label>
+          <label class="veld"><span class="veld-label">{w(lang, "phone")} <em>{w(lang, "optional")}</em></span><input name="telefoon" type="tel" autocomplete="tel" /></label>
+          <label class="veld"><span class="veld-label">{w(lang, "message")}</span><textarea name="bericht" required></textarea></label>
+          <div class="form-voet">
+            <span class="vu"><i aria-hidden="true"></i>Rec</span>
+            <button class="knop" type="submit"><Icon name="mail" size={18} />{w(lang, "send")}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>

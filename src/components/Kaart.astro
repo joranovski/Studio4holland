@@ -1,0 +1,26 @@
+---
+// Kaartje voor een item in een lijst: foto, titel, jaar en een stukje tekst.
+import Foto from "./Foto.astro";
+import Icon from "./Icon.astro";
+import type { Page } from "../lib/content";
+import { w } from "../i18n";
+
+interface Props { item: Page; tekst?: boolean; sizes?: string; eager?: boolean }
+const { item, tekst = true, sizes, eager = false } = Astro.props;
+const beeld = item.cover ?? item.photos[0]?.src;
+---
+<article class="kaart">
+  <a class="kaart-link" href={item.url}>
+    <div class="kaart-beeld">
+      {beeld ? <Foto src={beeld} alt="" sizes={sizes} widths={[400, 800]} loading={eager ? "eager" : "lazy"} /> : <div class="kaart-leeg"><Icon name="vinyl" size={48} /></div>}
+      {item.forSale && <span class="sticker">{w(item.lang, "forSale")}</span>}
+      {item.photos.length > 1 && <span class="kaart-aantal mono">{item.photos.length} {w(item.lang, "photos")}</span>}
+    </div>
+    <div class="kaart-tekst">
+      <h3 class="kaart-titel">{item.title}</h3>
+      {item.year && <p class="kaart-jaar mono">{item.year}</p>}
+      {tekst && item.excerpt && <p class="kaart-uitleg">{item.excerpt}</p>}
+      <span class="kaart-meer">{w(item.lang, "readMore")} <Icon name="arrow" size={16} /></span>
+    </div>
+  </a>
+</article>

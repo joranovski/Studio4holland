@@ -1,0 +1,75 @@
+---
+// Eén project of product: tekst links, foto's rechts, en bladeren naar het vorige of volgende item.
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import Galerij from "../components/Galerij.astro";
+import ContactKnoppen from "../components/ContactKnoppen.astro";
+import { Image } from "astro:assets";
+import arm from "../assets/technics-arm.png";
+import draaitafelLijn from "../assets/turntable-lijn.png";
+import { renderBody, type Page } from "../lib/content";
+import { SECTION_ICON, site } from "../data/site";
+import { w, t } from "../i18n";
+
+interface Props { page: Page; sectionPage: Page; prev?: Page; next?: Page }
+const { page, sectionPage, prev, next } = Astro.props;
+const lang = page.lang;
+const { Content } = await renderBody(page);
+const technics = ["turntables", "repairs"].includes(page.section);
+const tags = page.tags.filter((tg) => !/^(sale)$/i.test(tg));
+const schema = {
+  "@context": "https://schema.org",
+  "@type": page.forSale ? "Product" : "CreativeWork",
+  name: page.title,
+  url: new URL(page.url, site.url).href,
+  ...(page.excerpt ? { description: page.excerpt } : {}),
+  ...(page.year ? { dateCreated: String(page.year) } : {}),
+  ...(page.forSale ? { brand: { "@type": "Brand", name: site.name } } : { creator: { "@type": "Organization", name: site.name } }),
+};
+---
+<Base lang={lang} title={page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover ?? page.photos[0]?.src} schema={schema}>
+  <article class="sectie">
+    <div class="wrap">
+      <nav class="kruimel" aria-label={t(lang, "Kruimelpad", "Breadcrumb")}>
+        <a href={sectionPage.url}><Icon name={SECTION_ICON[page.section]} size={16} />{sectionPage.title}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{page.title}</span>
+      </nav>
+      <div class="tab-rij">
+        <h1 class="tab">{page.title}</h1>
+      </div>
+      <div class="paneel">
+        <div class="item-raster">
+          <div class="item-tekst">
+            {(page.year || tags.length > 0 || page.forSale) && (
+              <ul class="meta" aria-label={t(lang, "Kenmerken", "Details")}>
+                {page.forSale && <li class="chip" style="background:var(--groen-500);color:#fff;font-weight:700">{w(lang, "forSale")}</li>}
+                {page.year && <li class="chip chip-jaar">{page.year}</li>}
+                {tags.map((tg) => <li class="chip"><Icon name="tag" size={13} />{tg}</li>)}
+              </ul>
+            )}
+            {page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}
+            <div class="proza"><Content /></div>
+            <ContactKnoppen lang={lang} prijs={page.forSale} klein />
+            {technics && (
+              <div class="item-arm" aria-hidden="true">
+                <Image src={arm} alt="" width={96} densities={[1, 2]} />
+                <div class="artwork artwork-draaitafel" style="width:220px"><Image src={draaitafelLijn} alt="" width={220} densities={[1, 2]} /></div>
+              </div>
+            )}
+          </div>
+          <div>
+            <Galerij photos={page.photos} lang={lang} titel={page.title} />
+          </div>
+        </div>
+
+        {(prev || next) && (
+          <nav class="bladeren" aria-label={t(lang, "Bladeren", "Browse")}>
+            {prev ? <a class="toets" href={prev.url} rel="prev"><Icon name="prev" size={16} /><span><small>{w(lang, "previous")}</small>{prev.title}</span></a> : <span></span>}
+            {next ? <a class="toets" href={next.url} rel="next" style="text-align:right"><span><small>{w(lang, "next")}</small>{next.title}</span><Icon name="next" size={16} /></a> : <span></span>}
+          </nav>
+        )}
+      </div>
+    </div>
+  </article>
+</Base>

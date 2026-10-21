@@ -1,0 +1,9 @@
+---
+// Sectiepagina, bijvoorbeeld /en/turntables/
+import Sectie from "../../../views/Sectie.astro";
+import { sectionPaths } from "../../../lib/content";
+export async function getStaticPaths() {
+  return sectionPaths("en");
+}
+---
+<Sectie {...Astro.props} />

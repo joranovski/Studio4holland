@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /designsystem/
+
+Sitemap: https://www.studio4holland.nl/sitemap.xml

@@ -1,0 +1,33 @@
+---
+// Eén foto als <picture> met AVIF (kleinst) en WebP als terugval; de originele JPEG/PNG blijft alleen als bron.
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** hoe breed de foto op het scherm is, voor de juiste bestandsgrootte */
+  sizes?: string;
+  widths?: number[];
+  class?: string;
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+}
+const { src, alt, sizes = "(min-width: 1100px) 33vw, (min-width: 700px) 50vw, 100vw", widths, class: klasse, loading = "lazy", fetchpriority } = Astro.props;
+// Weinig breedtes per foto houdt de build snel; de browser kiest de kleinste die past.
+const gevraagd = widths ?? [480, 960];
+const breedtes = [...new Set(gevraagd.map((b) => Math.min(b, src.width)))];
+---
+<Picture
+  src={src}
+  alt={alt}
+  formats={["avif", "webp"]}
+  fallbackFormat="webp"
+  widths={breedtes}
+  sizes={sizes}
+  quality={62}
+  loading={loading}
+  decoding="async"
+  fetchpriority={fetchpriority}
+  class={klasse}
+/>

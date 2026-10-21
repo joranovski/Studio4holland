@@ -1,0 +1,75 @@
+---
+import "@fontsource/lato/latin-400.css";
+import "@fontsource/lato/latin-400-italic.css";
+import "@fontsource/lato/latin-700.css";
+import "@fontsource/lato/latin-900.css";
+import "@fontsource/ibm-plex-mono/latin-500.css";
+import "../styles/global.css";
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import TerugKnop from "../components/TerugKnop.astro";
+import { site } from "../data/site";
+import { t, w, type Lang } from "../i18n";
+import deelbeeld from "../assets/deelbeeld.jpg";
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** dezelfde pagina in beide talen (voor de taaltoetsen en hreflang) */
+  alt?: Record<Lang, string>;
+  /** sectie die in het menu oplicht */
+  current?: string;
+  image?: ImageMetadata;
+  noindex?: boolean;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { lang, title, description = site.description[lang], alt = { nl: "/nl/", en: "/en/" }, current, image, noindex = false, schema } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t(lang, "Technics-reparatie, custom draaitafels en speakers", "Technics repair, custom turntables and speakers")}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = await getImage({ src: image ?? deelbeeld, width: 1200, height: 630, fit: "cover", format: "jpg", quality: 78 });
+const ogUrl = new URL(og.src, Astro.site).href;
+const abs = (p: string) => new URL(p, Astro.site).href;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="alternate" hreflang="nl" href={abs(alt.nl)} />}
+    {!noindex && <link rel="alternate" hreflang="en" href={abs(alt.en)} />}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={abs(alt.nl)} />}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#161616" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={t(lang, "nl_NL", "en_GB")} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+  </head>
+  <body>
+    <a class="skip" href="#inhoud">{w(lang, "skip")}</a>
+    <Header lang={lang} alt={alt} current={current} />
+    <main id="inhoud" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <TerugKnop lang={lang} />
+  </body>
+</html>

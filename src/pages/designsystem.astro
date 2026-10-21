@@ -1,0 +1,128 @@
+---
+// Designsystem van Studio 4 Holland: alle tokens en bouwstenen op één pagina.
+// Niet in zoekmachines (noindex + robots.txt). Bron van de waarden: src/styles/tokens.css.
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import Deck from "../components/Deck.astro";
+import ContactKnoppen from "../components/ContactKnoppen.astro";
+import { Image } from "astro:assets";
+import speakerLijn from "../assets/speaker-lijn.png";
+import draaitafelLijn from "../assets/turntable-lijn.png";
+import technicsfarm from "../assets/technicsfarm.png";
+import logo from "../assets/logo-st4hl.png";
+
+const groepen = [
+  { naam: "Oranje", uitleg: "De “4” uit het logo. Tabs, actieknoppen, accenten.", kleuren: ["oranje-300", "oranje-400", "oranje-500", "oranje-600", "oranje-700"] },
+  { naam: "Grafiet", uitleg: "De zwarte kast van een SL1200. Achtergronden, panelen, toetsen.", kleuren: ["zwart", "grafiet-950", "grafiet-900", "grafiet-850", "grafiet-800", "grafiet-700", "grafiet-600", "grafiet-500", "grafiet-400", "grafiet-300", "grafiet-200", "wit"] },
+  { naam: "Signaal", uitleg: "Groen = te koop / bel voor de prijs. Amber = focus en opname. Rood = fout.", kleuren: ["groen-500", "groen-700", "amber-400", "rood-600"] },
+  { naam: "Metaal en lijn", uitleg: "Chroom van de toonarm en het typeplaatje; grijs van de lijntekeningen.", kleuren: ["chroom", "chroom-licht", "artwork", "led-aan"] },
+];
+const ikonen = ["speaker", "vinyl", "hex", "wrench", "link", "chair", "card", "home", "mail", "phone", "recycle", "tag", "arrow", "prev", "next", "expand"];
+const ruimte = ["r-1", "r-2", "r-3", "r-4", "r-5", "r-6", "r-7", "r-8"];
+---
+<Base lang="nl" title="Designsystem" noindex>
+  <style>
+    .ds{display:grid;gap:var(--r-7);padding-block:var(--r-6)}
+    .ds h2{font:900 var(--fs-xl)/1.1 var(--font);margin-bottom:var(--r-2)}
+    .ds h3:not(.tab){font:700 var(--fs-m)/1.2 var(--font);margin-bottom:var(--r-2);color:var(--oranje-300)}
+    .ds .uitleg{color:var(--tekst-gedempt);max-width:70ch;margin-bottom:var(--r-4)}
+    .stalen{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:var(--r-3);margin-bottom:var(--r-5)}
+    .staal{border-radius:var(--rond-m);overflow:hidden;border:1px solid var(--lijn);background:var(--zwart)}
+    .staal i{display:block;height:64px}
+    .staal span{display:block;padding:8px 10px;font:500 .72rem/1.4 var(--mono)}
+    .rij{display:flex;flex-wrap:wrap;gap:var(--r-3);align-items:center}
+    .ikonen{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:var(--r-3)}
+    .ikonen div{display:grid;justify-items:center;gap:6px;padding:12px;border-radius:var(--rond-m);background:var(--zwart);font:500 .7rem/1 var(--mono);color:var(--tekst-gedempt)}
+    .ikonen svg{color:var(--oranje-400)}
+    .maat{display:flex;align-items:center;gap:var(--r-3);font:500 .75rem/1 var(--mono);color:var(--tekst-gedempt)}
+    .maat i{display:block;height:14px;background:var(--oranje-500);border-radius:2px}
+    .letters p{margin-bottom:var(--r-3)}
+  </style>
+  <div class="wrap ds">
+    <header>
+      <p class="mono" style="color:var(--oranje-300);letter-spacing:.16em;text-transform:uppercase;font-size:.8rem">Studio 4 Holland · Designsystem</p>
+      <h1 style="font:900 var(--fs-xxl)/1 var(--font);margin-top:10px">Technics-kast, oranje 4</h1>
+      <p class="intro" style="margin-top:var(--r-4)">Gedestilleerd uit de oude site: donkergrijze achtergrond, zwarte panelen, oranje tabs, Lato en de lijntekeningen van speaker en draaitafel. Opgefrist met de toetsen, lampjes en het metaal van een SL1200. Alle waarden staan in <code>src/styles/tokens.css</code>.</p>
+    </header>
+
+    <section>
+      <h2>Kleur</h2>
+      {groepen.map((g) => (
+        <>
+          <h3>{g.naam}</h3>
+          <p class="uitleg">{g.uitleg}</p>
+          <div class="stalen">
+            {g.kleuren.map((k) => <div class="staal"><i style={`background:var(--${k})`}></i><span>--{k}</span></div>)}
+          </div>
+        </>
+      ))}
+    </section>
+
+    <section class="letters">
+      <h2>Letter</h2>
+      <p class="uitleg">Lato (400, 700, 900) voor alles; IBM Plex Mono voor tellers, jaartallen en serienummers. Koppen in 900, labels op toetsen in 700 hoofdletters.</p>
+      <p style="font:900 var(--fs-xxl)/1 var(--font)">fs-xxl · Op maat gemaakt</p>
+      <p style="font:900 var(--fs-xl)/1.1 var(--font)">fs-xl · Draaitafels</p>
+      <p style="font:900 var(--fs-l)/1.2 var(--font)">fs-l · Introducing Hextech feet</p>
+      <p style="font-size:var(--fs-m)">fs-m · Lopende tekst: Found this snaredrum in my friends barn and thought it would be a cool idea to make a turntable out of it.</p>
+      <p class="mono" style="font-size:var(--fs-s);color:var(--oranje-300)">mono · 2015 · 01/08 · NL002422012B96</p>
+    </section>
+
+    <section>
+      <h2>Ruimte en vorm</h2>
+      <p class="uitleg">Ruimte in stappen van 4 px. Hoeken: toetsen 4 px, kaarten 8 px, panelen 14 px, chips als pil.</p>
+      <div style="display:grid;gap:8px">
+        {ruimte.map((r) => <div class="maat"><i style={`width:var(--${r})`}></i>--{r}</div>)}
+      </div>
+    </section>
+
+    <section>
+      <h2>Toetsen en lampjes</h2>
+      <p class="uitleg">Alles wat je kunt indrukken is een toets: verloop van licht naar donker, een harde schaduw eronder, en bij indrukken zakt hij 2 px. Het lampje brandt oranje bij de huidige keuze (aria-current / aria-pressed).</p>
+      <div class="rij">
+        <a class="toets" href="#"><i class="led"></i><Icon name="vinyl" size={16} /><span>Draaitafels</span></a>
+        <a class="toets" href="#" aria-current="page"><i class="led"></i><Icon name="speaker" size={16} /><span>Luidsprekers</span></a>
+        <a class="toets toets-vierkant" href="#" style="padding-top:14px"><i class="led" style="position:absolute;top:5px;left:50%;translate:-50% 0;width:6px;height:6px"></i>NL</a>
+        <a class="toets toets-vierkant" href="#" aria-current="true" style="padding-top:14px"><i class="led" style="position:absolute;top:5px;left:50%;translate:-50% 0;width:6px;height:6px"></i>EN</a>
+      </div>
+      <h3 style="margin-top:var(--r-5)">Actieknoppen</h3>
+      <ContactKnoppen lang="nl" />
+      <div class="rij" style="margin-top:var(--r-3)"><span class="knop knop-groen"><Icon name="phone" size={18} />Bel ons voor de prijs</span></div>
+      <h3 style="margin-top:var(--r-5)">Transport en teller</h3>
+      <div class="rij">
+        <span class="teller mono">03/08</span>
+        <div class="transport"><button class="t-toets" type="button"><Icon name="prev" size={18} /></button><button class="t-toets" type="button"><span class="stop-blok"></span></button><button class="t-toets" type="button"><Icon name="next" size={18} /></button></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tab en paneel</h2>
+      <p class="uitleg">Het oranje label van de oude site, nu met verloop en een oranje bovenrand op het zwarte paneel.</p>
+      <h3 class="tab"><Icon name="vinyl" size={20} />Draaitafels</h3>
+      <div class="paneel"><p>Paneelinhoud. <span class="chip chip-jaar">2015</span> <span class="chip"><Icon name="tag" size={13} />drumdeck</span> <span class="sticker" style="position:static;display:inline-block">Te koop</span></p></div>
+    </section>
+
+    <section>
+      <h2>Iconen</h2>
+      <p class="uitleg">Eigen lijn-iconen (1,6 px lijn, ronde uiteinden) in plaats van de Font Awesome-kit.</p>
+      <div class="ikonen">{ikonen.map((n) => <div><Icon name={n} size={26} />{n}</div>)}</div>
+    </section>
+
+    <section>
+      <h2>Artwork</h2>
+      <p class="uitleg">De lijntekeningen en het logo van de oude site. Lijntekeningen altijd in --artwork-grijs op 50% dekking, als versiering (aria-hidden).</p>
+      <div class="rij" style="gap:var(--r-6);align-items:flex-end">
+        <Image src={logo} alt="Studio 4 Holland-logo" width={160} />
+        <div class="artwork" style="width:260px"><Image src={speakerLijn} alt="" width={260} /></div>
+        <div class="artwork" style="width:200px"><Image src={draaitafelLijn} alt="" width={200} /></div>
+        <Image src={technicsfarm} alt="Technicsfarm" width={160} style="opacity:.55" />
+      </div>
+    </section>
+
+    <section>
+      <h2>Het deck</h2>
+      <p class="uitleg">De speelbare SL1200 van de homepage: plateau met strobestippen, toonarm, Start/Stop, 33/45 en pitch. Werkt met toetsenbord en staat stil bij “beweging beperken”.</p>
+      <div style="max-width:560px"><Deck lang="nl" /></div>
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,73 @@
+---
+// Kop met logo, het menu als rij draaitafeltoetsen (lampje brandt bij de sectie waar je bent)
+// en de taalkeuze als de 33/45-toetsen van een SL1200.
+import { Image } from "astro:assets";
+import logo from "../assets/logo-st4hl.png";
+import { getNav, getSection } from "../lib/content";
+import { w, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  alt: Record<Lang, string>;
+  current?: string;
+}
+const { lang, alt, current } = Astro.props;
+const nav = await getNav(lang);
+const contact = await getSection("contact", lang);
+const links = [...nav, ...(contact ? [contact] : [])];
+---
+<header class="kop">
+  <div class="kop-in">
+    <a class="logo" href={`/${lang}/`} aria-label="Studio 4 Holland, home">
+      <Image src={logo} alt="" width={96} height={56} densities={[1, 2]} loading="eager" />
+    </a>
+
+    <button class="menu-knop toets" type="button" aria-expanded="false" aria-controls="hoofdmenu">
+      <i class="led" aria-hidden="true"></i><span>{w(lang, "menu")}</span>
+    </button>
+
+    <nav id="hoofdmenu" class="hoofdmenu" aria-label={lang === "en" ? "Main menu" : "Hoofdmenu"}>
+      <ul class="toetsen">
+        {links.map((s) => (
+          <li>
+            <a class="toets" href={s.url} aria-current={current === s.section ? "page" : undefined}>
+              <i class="led" aria-hidden="true"></i>
+              <span>{s.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="taal" aria-label={lang === "en" ? "Language" : "Taal"}>
+      <span class="taal-label" aria-hidden="true">Speed</span>
+      <a class="toets toets-vierkant" href={alt.nl} hreflang="nl" lang="nl" aria-current={lang === "nl" ? "true" : undefined}>
+        <i class="led" aria-hidden="true"></i><span>NL</span><span class="visually-hidden"> Nederlands</span>
+      </a>
+      <a class="toets toets-vierkant" href={alt.en} hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}>
+        <i class="led" aria-hidden="true"></i><span>EN</span><span class="visually-hidden"> English</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Menu op de telefoon: zonder JavaScript staat het gewoon open
+  const knop = document.querySelector<HTMLButtonElement>(".menu-knop");
+  const menu = document.getElementById("hoofdmenu");
+  if (knop && menu) {
+    document.documentElement.classList.add("js-menu");
+    knop.addEventListener("click", () => {
+      const open = knop.getAttribute("aria-expanded") !== "true";
+      knop.setAttribute("aria-expanded", String(open));
+      menu.toggleAttribute("data-open", open);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && knop.getAttribute("aria-expanded") === "true") {
+        knop.setAttribute("aria-expanded", "false");
+        menu.removeAttribute("data-open");
+        knop.focus();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,9 @@
+---
+// Itempagina, bijvoorbeeld /en/turntables/drum-deck/
+import Item from "../../../views/Item.astro";
+import { itemPaths } from "../../../lib/content";
+export async function getStaticPaths() {
+  return itemPaths("en");
+}
+---
+<Item {...Astro.props} />

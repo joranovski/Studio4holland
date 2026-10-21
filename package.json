@@ -1,0 +1,19 @@
+{
+  "name": "studio4holland",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "kirby": "python3 scripts/kirby2astro.py ../st4hl/content"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/lato": "^5.3.0",
+    "astro": "^7.4.1",
+    "sharp": "^0.35.5"
+  }
+}

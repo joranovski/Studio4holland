@@ -1,0 +1,107 @@
+/* ---------- De speelbare SL1200 ----------
+   Alle maten zijn afgeleid van het echte apparaat (453 × 353 mm) en staan in procenten,
+   zodat het deck meeschaalt. Tekst schaalt mee via container query units (cqi). */
+
+.deck{
+  --zwart:#121214; --rand:#2a2a2e; --zilver:#c9ccd0; --oranje:var(--oranje-500,#f54e00);
+  position:relative; width:100%; aspect-ratio:453/353; container-type:inline-size;
+  border-radius:2.2%/2.8%;
+  background:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px),
+    linear-gradient(160deg,#26262a,#141416 55%,#0e0e10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -2px 0 rgba(0,0,0,.6),
+    0 1px 0 #000,
+    0 30px 60px -28px rgba(0,0,0,.9),
+    0 12px 24px -12px rgba(0,0,0,.7);
+  user-select:none; -webkit-user-select:none;
+}
+/* rubberen voeten-schaduw onder het apparaat */
+.deck-plint{position:absolute;inset:auto 4% -2.2% 4%;height:3%;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(6px);z-index:-1}
+
+/* plateau met strobestippen, mat en plaat */
+.deck-plateau{position:absolute;left:2.3%;top:2.8%;width:73.3%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle closest-side,#2b2c2f 0 89%,#9fa3a8 89.6%,#e9ebee 92%,#b9bdc2 96%,#7d8186 99%,#3a3b3e 100%);
+  box-shadow:0 0.6cqi 1.4cqi rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,0,0,.6)}
+.deck-strobe{position:absolute;inset:0;width:100%;height:100%;fill:#3d4044;opacity:.95}
+.deck-draai{position:absolute;inset:0;border-radius:50%}
+.deck-mat{position:absolute;inset:8.5%;border-radius:50%;background:
+  repeating-radial-gradient(circle closest-side,#1a1a1c 0 1.2%,#151517 1.2% 2.4%);box-shadow:0 0 0 1px #000}
+.deck-plaat{position:absolute;inset:9.6%;border-radius:50%;
+  background:
+    radial-gradient(circle closest-side,transparent 0 32%,rgba(255,255,255,.06) 32.3% 33%,transparent 33.3%),
+    radial-gradient(circle closest-side,transparent 0 94%,rgba(255,255,255,.08) 95%,transparent 96.5%),
+    repeating-radial-gradient(circle closest-side,#0b0b0c 0 .55%,#18181a .55% .8%,#0d0d0e .8% 1.1%),
+    #0c0c0d;
+  box-shadow:0 0 0 1px #000,0 .4cqi 1cqi rgba(0,0,0,.6)}
+.deck-label{position:absolute;inset:34%;border-radius:50%;display:grid;place-content:center;justify-items:center;gap:.2cqi;text-align:center;
+  background:radial-gradient(circle closest-side,#ff6a1f,var(--oranje) 60%,#c43c00);color:#fff;box-shadow:inset 0 0 0 .25cqi rgba(0,0,0,.18)}
+.deck-label-merk{font:900 2.1cqi/1 var(--font);letter-spacing:.18em;margin-right:-.18em}
+.deck-label-sub{font:700 1.15cqi/1 var(--font);letter-spacing:.42em;margin-right:-.42em;opacity:.92}
+.deck-label-rpm{font-size:1cqi;opacity:.85;margin-top:.5cqi}
+/* de glans staat stil: licht dat op een draaiende plaat valt */
+.deck-glans{position:absolute;inset:9.6%;border-radius:50%;pointer-events:none;mix-blend-mode:screen;
+  background:conic-gradient(from 20deg,transparent 0 8%,rgba(255,255,255,.11) 12%,transparent 18% 50%,rgba(255,255,255,.08) 62%,transparent 68%)}
+.deck-spil{position:absolute;left:50%;top:50%;width:2.2%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 35% 35%,#fff,#b8bcc1 45%,#6e7277)}
+
+/* strobelamp linksvoor; licht de stippen aan als de motor draait */
+.deck-strobelamp{position:absolute;left:3.2%;top:71%;width:6.5%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#3a3a3e,#151517 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 1px 2px #000}
+.deck-strobelamp span{position:absolute;inset:26%;border-radius:50%;background:radial-gradient(circle closest-side,#5a2a12,#2a140a);transition:background .3s,box-shadow .3s}
+.deck.aan .deck-strobelamp span{background:radial-gradient(circle closest-side,#ffd7a8,#ff7a2a 45%,#d64400);box-shadow:0 0 1.6cqi .6cqi rgba(255,110,30,.55)}
+.deck-plateau::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .4s;
+  background:radial-gradient(circle at 12% 88%,rgba(255,120,40,.55),transparent 32%);
+  -webkit-mask:radial-gradient(circle closest-side,transparent 0 89%,#000 89.5%);mask:radial-gradient(circle closest-side,transparent 0 89%,#000 89.5%)}
+.deck.aan .deck-plateau::after{opacity:1}
+.deck.aan .deck-strobe{fill:#1d1f22}
+
+/* toonarm: zwenkt naar de plaat als de motor aan staat */
+.deck-arm{position:absolute;left:66.4%;top:8.8%;width:29.1%;height:93.5%;overflow:visible;pointer-events:none;filter:drop-shadow(.6cqi 1cqi .8cqi rgba(0,0,0,.65))}
+.arm-voet{fill:#1c1c1f;stroke:#000;stroke-width:1}
+.arm-ring{fill:none;stroke:#55585d;stroke-width:3}
+.arm-zwenk{transform-box:view-box;transform-origin:70px 58px;transition:transform 1.4s cubic-bezier(.45,.05,.2,1)}
+.deck.aan .arm-zwenk{transform:rotate(30deg)}
+.arm-buis{fill:none;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.arm-gewicht{fill:#3b3d41;stroke:#111;stroke-width:1}
+.arm-as{fill:#c9ccd0;stroke:#6b6f74;stroke-width:2}
+.arm-kop{fill:#141416;stroke:#3a3b3f;stroke-width:1.2}
+.arm-element{fill:var(--oranje)}
+.arm-vinger{stroke:#d7dadd;stroke-width:2;stroke-linecap:round}
+
+/* Start/Stop en 33/45 */
+.deck-bediening{position:absolute;left:2.4%;bottom:2.6%;display:flex;align-items:flex-end;gap:1.4cqi}
+.deck-start{width:12.4cqi;height:8.6cqi;border-radius:.6cqi;border:1px solid #000;cursor:pointer;color:#cfd2d6;
+  font:700 1.35cqi/1.25 var(--font);letter-spacing:.14em;text-align:left;padding:0 1.2cqi;
+  background:linear-gradient(#3a3b3f,#232427 55%,#1b1c1e);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 .5cqi 0 #050505,0 .7cqi 1.2cqi rgba(0,0,0,.6);
+  transition:transform .08s,box-shadow .08s}
+.deck-start:active,.deck-start.druk{transform:translateY(.4cqi);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 .1cqi 0 #050505,0 .2cqi .5cqi rgba(0,0,0,.6)}
+.deck-snelheid{display:flex;gap:.8cqi}
+.deck-rpm{position:relative;width:5.6cqi;height:4.4cqi;border-radius:.45cqi;border:1px solid #000;cursor:pointer;color:#cfd2d6;
+  font:700 1.5cqi/1 var(--font);display:grid;place-items:center;
+  background:linear-gradient(#3a3b3f,#232427 55%,#1b1c1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 .35cqi 0 #050505}
+.deck-rpm .led{position:absolute;top:-1.5cqi;left:50%;translate:-50% 0;width:.9cqi;height:.9cqi}
+.deck-rpm[aria-pressed="true"]{transform:translateY(.25cqi);box-shadow:inset 0 1px 2px rgba(0,0,0,.5),0 .1cqi 0 #050505}
+.deck-rpm[aria-pressed="true"] .led{background:var(--led-aan);box-shadow:0 0 .8cqi var(--led-gloed)}
+.deck-start:focus-visible,.deck-rpm:focus-visible{outline:2px solid var(--oranje);outline-offset:3px}
+
+/* pitch-fader rechtsvoor: −8 boven, +8 onder, zoals op een SL1200 */
+.deck-pitch{position:absolute;right:3.2%;top:47%;bottom:4%;width:9%;display:grid;grid-template-columns:1fr auto;align-items:stretch;column-gap:.6cqi}
+.deck-pitch-schaal{display:flex;flex-direction:column;justify-content:space-between;font-size:1.2cqi;color:#8e9298;text-align:right;padding-block:.4cqi}
+.deck-pitch-schaal b{font-weight:500}
+.deck-fader{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;width:3.4cqi;height:100%;margin:0;background:transparent;cursor:ns-resize;touch-action:none}
+.deck-fader::-webkit-slider-runnable-track{width:1cqi;margin-inline:auto;border-radius:.5cqi;background:#050506;box-shadow:inset 0 1px 2px #000,0 1px 0 rgba(255,255,255,.08)}
+.deck-fader::-moz-range-track{width:1cqi;border-radius:.5cqi;background:#050506;box-shadow:inset 0 1px 2px #000}
+.deck-fader::-webkit-slider-thumb{-webkit-appearance:none;width:3.4cqi;height:4.6cqi;border-radius:.4cqi;border:1px solid #000;margin-left:-1.2cqi;
+  background:linear-gradient(90deg,#2c2d30,#55575c 30%,#2a2b2e 50%,#55575c 70%,#2c2d30),#333;
+  box-shadow:inset 0 0 0 .2cqi rgba(0,0,0,.25),0 .3cqi .6cqi rgba(0,0,0,.7)}
+.deck-fader::-moz-range-thumb{width:3.4cqi;height:4.6cqi;border-radius:.4cqi;border:1px solid #000;
+  background:linear-gradient(90deg,#2c2d30,#55575c 30%,#2a2b2e 50%,#55575c 70%,#2c2d30)}
+.deck-fader:focus-visible{outline:2px solid var(--oranje);outline-offset:3px;border-radius:.4cqi}
+.deck-pitch-waarde{position:absolute;right:0;top:-4.2cqi;font-size:1.3cqi;color:#ffb27c;background:#0a0a0b;padding:.35cqi .6cqi;border-radius:.3cqi;box-shadow:inset 0 1px 2px #000}
+
+.deck-model{position:absolute;right:3.2%;top:3.4%;font-size:1.05cqi;letter-spacing:.14em;color:#7d8187;text-transform:uppercase}
+
+@media (prefers-reduced-motion: reduce){.arm-zwenk,.deck-strobelamp span,.deck-plateau::after{transition:none}}

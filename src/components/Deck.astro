@@ -1,0 +1,156 @@
+---
+// Een speelbare Technics SL1200, helemaal in HTML en CSS (opmaak in styles/deck.css).
+// Start/Stop zet de plaat aan, 33/45 kiest de snelheid, de pitch-fader verandert de snelheid ±8%.
+// De arm zwenkt naar de plaat, het strobe-lampje gaat aan en de stippen op de plateaurand "staan stil"
+// op precies 0% pitch, net als bij een echte draaitafel.
+// Zonder JavaScript of met "beweging beperken" aan blijft alles stil staan.
+import "../styles/deck.css";
+import { t, type Lang } from "../i18n";
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+// Strobestippen zoals op de rand van een SL1200-plateau: vier rijen met elk een eigen aantal stippen
+// (voor 33 en 45 toeren bij 50 en 60 Hz). Coördinaten in een viewBox van 200 × 200.
+const rijen = [
+  { r: 97.6, n: 180 },
+  { r: 95.4, n: 183 },
+  { r: 93.2, n: 216 },
+  { r: 91.0, n: 222 },
+];
+const stippen = rijen.flatMap(({ r, n }) =>
+  Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2;
+    return { x: (100 + r * Math.cos(a)).toFixed(2), y: (100 + r * Math.sin(a)).toFixed(2), hoek: ((a * 180) / Math.PI).toFixed(1) };
+  }),
+);
+---
+<div class="deck" data-deck role="group" aria-label={t(lang, "Speelbare Technics SL1200", "Playable Technics SL1200")}>
+  <div class="deck-plint" aria-hidden="true"></div>
+
+  <div class="deck-plateau" aria-hidden="true">
+    <svg class="deck-strobe" viewBox="0 0 200 200">
+      {stippen.map((d) => <rect x={Number(d.x) - 0.55} y={Number(d.y) - 0.35} width="1.1" height="0.7" transform={`rotate(${d.hoek} ${d.x} ${d.y})`} />)}
+    </svg>
+    <div class="deck-draai">
+      <div class="deck-mat"></div>
+      <div class="deck-plaat">
+        <div class="deck-label">
+          <span class="deck-label-merk">STUDIO 4</span>
+          <span class="deck-label-sub">HOLLAND</span>
+          <span class="deck-label-rpm mono">33⅓</span>
+        </div>
+      </div>
+    </div>
+    <div class="deck-glans"></div>
+    <div class="deck-spil"></div>
+  </div>
+
+  <div class="deck-strobelamp" aria-hidden="true"><span></span></div>
+
+  <svg class="deck-arm" viewBox="0 0 120 300" aria-hidden="true">
+    <defs>
+      <linearGradient id="arm-chroom" x1="0" x2="1">
+        <stop offset="0" stop-color="#8d9196" /><stop offset=".45" stop-color="#f2f4f6" /><stop offset=".6" stop-color="#c4c8cd" /><stop offset="1" stop-color="#6f7378" />
+      </linearGradient>
+    </defs>
+    <circle cx="70" cy="58" r="40" class="arm-voet" />
+    <circle cx="70" cy="58" r="30" class="arm-ring" />
+    <g class="arm-zwenk">
+      <rect x="62" y="0" width="16" height="34" rx="4" class="arm-gewicht" />
+      <path d="M70 40 L70 210 Q70 232 58 246 L40 262" class="arm-buis" stroke="url(#arm-chroom)" />
+      <g transform="translate(40 262) rotate(28)">
+        <rect x="-12" y="-6" width="26" height="34" rx="3" class="arm-kop" />
+        <rect x="-6" y="22" width="12" height="9" rx="1.5" class="arm-element" />
+        <path d="M14 0 L24 -4" class="arm-vinger" />
+      </g>
+      <circle cx="70" cy="58" r="12" class="arm-as" />
+    </g>
+  </svg>
+
+  <div class="deck-bediening">
+    <button class="deck-start" type="button" aria-pressed="false" data-start>
+      <span>START<br />STOP</span>
+    </button>
+    <div class="deck-snelheid" role="group" aria-label={t(lang, "Snelheid", "Speed")}>
+      <button class="deck-rpm" type="button" aria-pressed="true" data-rpm="33.333"><i class="led"></i><span>33</span></button>
+      <button class="deck-rpm" type="button" aria-pressed="false" data-rpm="45"><i class="led"></i><span>45</span></button>
+    </div>
+  </div>
+
+  <div class="deck-pitch">
+    <span class="deck-pitch-schaal mono" aria-hidden="true"><b>−8</b><b>0</b><b>+8</b></span>
+    <input class="deck-fader" type="range" min="-8" max="8" step="0.1" value="0" data-pitch
+      aria-label={t(lang, "Pitch (snelheid in procenten)", "Pitch (speed in percent)")} aria-valuetext="0%" />
+    <span class="deck-pitch-waarde mono" data-pitchwaarde aria-hidden="true">0.0%</span>
+  </div>
+
+  <span class="deck-model mono" aria-hidden="true">SL-1200 · Studio 4 custom</span>
+</div>
+
+<script>
+  for (const deck of document.querySelectorAll<HTMLElement>("[data-deck]")) {
+    const draai = deck.querySelector<HTMLElement>(".deck-draai")!;
+    const start = deck.querySelector<HTMLButtonElement>("[data-start]")!;
+    const rpmKnoppen = [...deck.querySelectorAll<HTMLButtonElement>("[data-rpm]")];
+    const fader = deck.querySelector<HTMLInputElement>("[data-pitch]")!;
+    const waarde = deck.querySelector<HTMLElement>("[data-pitchwaarde]")!;
+    const label = deck.querySelector<HTMLElement>(".deck-label-rpm")!;
+    const stil = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let rpm = 33.333, pitch = 0, aan = false, snelheid = 0;
+    // Eén omwenteling bij 33⅓ duurt 1,8 seconde. De snelheid zit in playbackRate,
+    // zodat de plaat soepel optrekt en uitloopt zoals een direct-drive motor.
+    const rond = [{ transform: "rotate(0turn)" }, { transform: "rotate(1turn)" }];
+    const anim = stil ? null : draai.animate(rond, { duration: 1800, iterations: Infinity });
+    // De strobestippen zitten op de rand van het plateau. Onder het strobelicht zie je alleen het verschil
+    // met de juiste snelheid: op toeren staan ze stil, met pitch kruipen ze langzaam vooruit of achteruit.
+    const strobe = deck.querySelector<HTMLElement>(".deck-strobe")!;
+    const sAnim = stil ? null : strobe.animate(rond, { duration: 1800, iterations: Infinity });
+    anim?.pause();
+    sAnim?.pause();
+    // ver in de tijd beginnen, zodat de stippen ook achteruit kunnen kruipen (negatieve pitch)
+    if (sAnim) sAnim.currentTime = 1800 * 100000;
+    let doel = 0, frame = 0;
+    const doelSnelheid = () => (aan ? (rpm / 33.333) * (1 + pitch / 100) : 0);
+    const stap = () => {
+      // optrekken in ±0,7 s, uitlopen iets langzamer (de rem van een SL1200 is snel maar niet direct)
+      const factor = doel > snelheid ? 0.09 : 0.06;
+      snelheid += (doel - snelheid) * factor;
+      if (Math.abs(doel - snelheid) < 0.002) snelheid = doel;
+      if (anim && sAnim) {
+        anim.playbackRate = Math.max(snelheid, 0.0001);
+        if (snelheid === 0) anim.pause(); else if (anim.playState !== "running") anim.play();
+        const drift = aan ? snelheid - rpm / 33.333 : snelheid;
+        sAnim.playbackRate = Math.abs(drift) < 0.0005 ? 0.0001 : drift;
+        if (Math.abs(drift) < 0.0005) sAnim.pause(); else if (sAnim.playState !== "running") sAnim.play();
+      }
+      deck.classList.toggle("op-toeren", aan && snelheid === doel && Math.abs(pitch) < 0.05);
+      if (snelheid !== doel) frame = requestAnimationFrame(stap);
+      else if (sAnim && aan && pitch !== 0) sAnim.play();
+    };
+    const pas = () => { doel = doelSnelheid(); cancelAnimationFrame(frame); frame = requestAnimationFrame(stap); };
+
+    start.addEventListener("click", () => {
+      aan = !aan;
+      start.setAttribute("aria-pressed", String(aan));
+      deck.classList.toggle("aan", aan);
+      pas();
+    });
+    for (const k of rpmKnoppen) {
+      k.addEventListener("click", () => {
+        rpm = Number(k.dataset.rpm);
+        rpmKnoppen.forEach((b) => b.setAttribute("aria-pressed", String(b === k)));
+        label.textContent = rpm > 40 ? "45" : "33⅓";
+        pas();
+      });
+    }
+    fader.addEventListener("input", () => {
+      pitch = Number(fader.value);
+      if (Math.abs(pitch) < 0.25) { pitch = 0; } // de klik in het midden van de fader
+      const tekst = (pitch > 0 ? "+" : pitch < 0 ? "−" : "") + Math.abs(pitch).toFixed(1) + "%";
+      waarde.textContent = tekst;
+      fader.setAttribute("aria-valuetext", tekst);
+      deck.style.setProperty("--pitch", String(pitch));
+      pas();
+    });
+  }
+</script>

@@ -1,0 +1,95 @@
+---
+// Fotogalerij met een kijker: transporttoetsen (◀◀ ■ ▶▶), een teller zoals op een tapedeck,
+// pijltjestoetsen en vegen. Zonder JavaScript opent elke foto gewoon groot in een nieuwe pagina.
+import { getImage } from "astro:assets";
+import Foto from "./Foto.astro";
+import Icon from "./Icon.astro";
+import type { Photo } from "../lib/content";
+import { w, type Lang } from "../i18n";
+
+interface Props { photos: Photo[]; lang: Lang; titel: string; sizes?: string }
+const { photos, lang, titel, sizes = "(min-width: 1100px) 28vw, (min-width: 700px) 45vw, 100vw" } = Astro.props;
+const groot = await Promise.all(photos.map((p) => getImage({ src: p.src, width: Math.min(p.src.width, 1600), format: "webp", quality: 62 })));
+const pad2 = (n: number) => String(n).padStart(2, "0");
+---
+{photos.length > 0 && (
+  <div class="galerij" data-galerij>
+    <ul class:list={["galerij-raster", { enkel: photos.length === 1 }]}>
+      {photos.map((p, i) => (
+        <li>
+          <figure>
+            <a class="galerij-duim" href={groot[i].src} data-index={i} aria-label={`${w(lang, "openPhoto")}: ${p.caption || p.alt}`}>
+              <Foto src={p.src} alt={p.alt} sizes={sizes} />
+              <span class="galerij-vergroot" aria-hidden="true"><Icon name="expand" size={18} /></span>
+            </a>
+            {p.caption && <figcaption>{p.caption}</figcaption>}
+          </figure>
+        </li>
+      ))}
+    </ul>
+
+    <dialog class="kijker" aria-label={`${titel}, ${photos.length} ${w(lang, "photos")}`}>
+      <div class="kijker-beelden">
+        {photos.map((p, i) => (
+          <figure class="kijker-beeld" hidden={i !== 0} data-index={i}>
+            <Foto src={p.src} alt={p.alt} sizes="100vw" widths={[1600]} />
+            {p.caption && <figcaption>{p.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+      <div class="kijker-paneel">
+        <span class="teller mono" aria-live="polite"><span data-nu>01</span>/<span>{pad2(photos.length)}</span></span>
+        <div class="transport">
+          <button class="t-toets" type="button" data-vorige aria-label={w(lang, "previous")}><Icon name="prev" size={18} /></button>
+          <button class="t-toets t-stop" type="button" data-sluit aria-label={w(lang, "close")}><span class="stop-blok" aria-hidden="true"></span></button>
+          <button class="t-toets" type="button" data-volgende aria-label={w(lang, "next")}><Icon name="next" size={18} /></button>
+        </div>
+      </div>
+    </dialog>
+  </div>
+)}
+
+<script>
+  for (const g of document.querySelectorAll<HTMLElement>("[data-galerij]")) {
+    const kijker = g.querySelector<HTMLDialogElement>(".kijker");
+    if (!kijker || typeof kijker.showModal !== "function") continue;
+    const beelden = [...kijker.querySelectorAll<HTMLElement>(".kijker-beeld")];
+    const nu = kijker.querySelector<HTMLElement>("[data-nu]")!;
+    let i = 0;
+    const toon = (n: number) => {
+      i = (n + beelden.length) % beelden.length;
+      beelden.forEach((b, k) => (b.hidden = k !== i));
+      nu.textContent = String(i + 1).padStart(2, "0");
+    };
+    const druk = (sel: string) => {
+      const t = kijker.querySelector(sel);
+      t?.classList.add("druk");
+      setTimeout(() => t?.classList.remove("druk"), 160);
+    };
+    g.querySelectorAll<HTMLAnchorElement>(".galerij-duim").forEach((a) =>
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        toon(Number(a.dataset.index));
+        kijker.showModal();
+      }),
+    );
+    kijker.querySelector("[data-vorige]")!.addEventListener("click", () => toon(i - 1));
+    kijker.querySelector("[data-volgende]")!.addEventListener("click", () => toon(i + 1));
+    kijker.querySelector("[data-sluit]")!.addEventListener("click", () => kijker.close());
+    kijker.addEventListener("click", (e) => { if (e.target === kijker) kijker.close(); });
+    kijker.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { druk("[data-vorige]"); toon(i - 1); }
+      if (e.key === "ArrowRight") { druk("[data-volgende]"); toon(i + 1); }
+    });
+    // vegen op de telefoon
+    let x0: number | null = null;
+    kijker.addEventListener("touchstart", (e) => (x0 = e.touches[0].clientX), { passive: true });
+    kijker.addEventListener("touchend", (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) toon(i + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+    if (beelden.length < 2) kijker.querySelectorAll<HTMLElement>("[data-vorige],[data-volgende]").forEach((b) => (b.hidden = true));
+  }
+</script>
