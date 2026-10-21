@@ -190,7 +190,7 @@ const stappen = [t(lang, "Waarover", "Topic"), t(lang, "Details", "Details"), t(
         else k.removeAttribute("aria-current");
         k.classList.toggle("klaar", i + 1 < hoogste && i + 1 !== n);
       });
-      terug.disabled = n === 1;
+      terug.hidden = n === 1;
       verder.hidden = n === stappen.length;
       verstuur.hidden = n !== stappen.length;
       teller.textContent = en ? `Step ${n} of ${stappen.length}` : `Stap ${n} van ${stappen.length}`;

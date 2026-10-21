@@ -1,0 +1,37 @@
+---
+// Lange tekst op de telefoon: eerst een stuk, met "Lees verder" voor de rest.
+// Zonder JavaScript, of op een groter scherm, staat gewoon alles er.
+import { t, type Lang } from "../i18n";
+interface Props { lang: Lang; class?: string }
+const { lang, class: klasse } = Astro.props;
+---
+<div class:list={["inklap", klasse]} data-inklap>
+  <div class="inklap-in"><slot /></div>
+  <button type="button" class="toets toets-gewoon inklap-knop" hidden aria-expanded="false">
+    <span class="inklap-meer">{t(lang, "Lees verder", "Read more")}</span><span class="inklap-minder">{t(lang, "Minder tonen", "Show less")}</span>
+  </button>
+</div>
+
+<script>
+  const smal = matchMedia("(max-width: 640px)");
+  const blokken = [...document.querySelectorAll<HTMLElement>("[data-inklap]")];
+  const zet = () => {
+    for (const b of blokken) {
+      const knop = b.querySelector<HTMLButtonElement>(".inklap-knop")!;
+      const lang = smal.matches && b.querySelector<HTMLElement>(".inklap-in")!.scrollHeight > 560;
+      knop.hidden = !lang;
+      b.classList.toggle("dicht", lang && knop.getAttribute("aria-expanded") !== "true");
+    }
+  };
+  for (const b of blokken) {
+    const knop = b.querySelector<HTMLButtonElement>(".inklap-knop")!;
+    knop.addEventListener("click", () => {
+      const open = knop.getAttribute("aria-expanded") !== "true";
+      knop.setAttribute("aria-expanded", String(open));
+      b.classList.toggle("dicht", !open);
+      if (!open) b.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+  }
+  smal.addEventListener("change", zet);
+  zet();
+</script>

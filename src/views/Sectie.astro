@@ -6,6 +6,7 @@ import Icon from "../components/Icon.astro";
 import Galerij from "../components/Galerij.astro";
 import ContactKnoppen from "../components/ContactKnoppen.astro";
 import Foto from "../components/Foto.astro";
+import Inklap from "../components/Inklap.astro";
 import { Image } from "astro:assets";
 import speakerLijn from "../assets/speaker-lijn.png";
 import draaitafelLijn from "../assets/turntable-lijn.png";
@@ -94,7 +95,7 @@ const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repa
         )}
         {!enkel && heeftTekst && (
           <div class:list={["sectie-intro", { lang: lang_ }]}>
-            <div class="proza">{page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}<Content /></div>
+            <Inklap lang={lang}><div class="proza">{page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}<Content /></div></Inklap>
             {artwork && !lang_ ? (
               <div class="artwork artwork-draaitafel" aria-hidden="true" style="justify-self:center"><Image src={artwork} alt="" width={400} /></div>
             ) : null}

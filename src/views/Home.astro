@@ -4,6 +4,7 @@ import Deck from "../components/Deck.astro";
 import Kaart from "../components/Kaart.astro";
 import Icon from "../components/Icon.astro";
 import Foto from "../components/Foto.astro";
+import Inklap from "../components/Inklap.astro";
 import { Image } from "astro:assets";
 import speakerLijn from "../assets/speaker-lijn.png";
 import { getSection, getUitgelicht, getTeKoop, getItems, renderBody } from "../lib/content";
@@ -104,7 +105,7 @@ const schema = {
     <div class="wrap">
       <h2 class="tab"><Icon name="home" size={20} />{home.title}</h2>
       <div class="paneel welkom-raster">
-        <div class="proza"><Content /></div>
+        <Inklap lang={lang}><div class="proza welkom-tekst"><Content /></div></Inklap>
         <div class="welkom-deck">
           <Deck lang={lang} />
           <p class="deck-uitleg">{t(lang, "Druk op Start/Stop, kies 33 of 45 en speel met de pitch.", "Press Start/Stop, pick 33 or 45 and play with the pitch.")}</p>
@@ -120,7 +121,7 @@ const schema = {
           <h2><Icon name={SECTION_ICON[r.key]} size={28} />{r.sectie!.title}</h2>
           <a href={r.sectie!.url}>{w(lang, "all")} <Icon name="arrow" size={16} /></a>
         </div>
-        <ul class="kaarten">
+        <ul class="kaarten kaarten-strip">
           {r.items.map((i) => <li><Kaart item={i} sizes="(min-width: 1240px) 400px, (min-width: 700px) 45vw, 100vw" /></li>)}
         </ul>
       </div>

@@ -61,7 +61,7 @@ const plek = [...hoofd, ...verhalen].find((s) => s.key === current)?.label
     <div class="kop-rechts">
       {aantalTeKoop > 0 && (
         <a class="toets toets-koop" href={teKoopPath(lang)} aria-current={current === "te-koop" ? "page" : undefined}>
-          <i class="led led-groen" aria-hidden="true"></i><span>{w(lang, "forSale")}</span><span class="tel mono">{aantalTeKoop}</span>
+          <i class="led led-groen" aria-hidden="true"></i><span class="koop-label">{w(lang, "forSale")}</span><span class="tel mono">{aantalTeKoop}</span>
         </a>
       )}
       <nav class="taal" aria-label={t(lang, "Taal", "Language")}>
@@ -79,6 +79,13 @@ const plek = [...hoofd, ...verhalen].find((s) => s.key === current)?.label
 </header>
 
 <script>
+  // De kop wordt slanker zodra je een stukje gescrold bent
+  const kop = document.querySelector<HTMLElement>(".kop");
+  if (kop) {
+    const zet = () => kop.classList.toggle("klein", scrollY > 40);
+    addEventListener("scroll", zet, { passive: true });
+    zet();
+  }
   // De uitklapper "Verhalen" sluit bij een klik ernaast of met Escape (werkt zonder JavaScript ook, als <details>).
   const uitklap = document.querySelector<HTMLDetailsElement>(".kop .uitklap");
   if (uitklap) {

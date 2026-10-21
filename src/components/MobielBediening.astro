@@ -97,7 +97,17 @@ const werk = (await getSection(inSectie ? current! : "turntables", lang))!;
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && menu.classList.contains("open")) zet(false);
     });
+    // Balken schuiven weg als je naar beneden leest en komen terug zodra je omhoog scrolt
+    let vorige = scrollY;
+    addEventListener("scroll", () => {
+      const y = scrollY;
+      const onderaan = y + innerHeight >= document.documentElement.scrollHeight - 40;
+      if (menu.classList.contains("open") || y < 160 || onderaan) document.documentElement.classList.remove("balk-weg");
+      else if (y > vorige + 8) document.documentElement.classList.add("balk-weg");
+      else if (y < vorige - 8) document.documentElement.classList.remove("balk-weg");
+      if (Math.abs(y - vorige) > 8) vorige = y;
+    }, { passive: true });
     // Op een breed scherm is er geen balk: dan het paneel dicht
-    matchMedia("(min-width: 821px)").addEventListener("change", (m) => m.matches && zet(false, false));
+    matchMedia("(min-width: 1025px)").addEventListener("change", (m) => m.matches && zet(false, false));
   }
 </script>
