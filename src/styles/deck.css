@@ -70,7 +70,7 @@
 .arm-element{fill:var(--oranje)}
 .arm-vinger{stroke:#d7dadd;stroke-width:2;stroke-linecap:round}
 
-/* Start/Stop en 33/45 */
+/* Start/Stop linksvoor; 33/45 in een eigen kolom rechts van het plateau, boven de pitch-fader */
 .deck-bediening{position:absolute;left:2.4%;bottom:2.6%;display:flex;align-items:flex-end;gap:1.4cqi}
 .deck-start{width:12.4cqi;height:8.6cqi;border-radius:.6cqi;border:1px solid #000;cursor:pointer;color:#cfd2d6;
   font:700 1.35cqi/1.25 var(--font);letter-spacing:.14em;text-align:left;padding:0 1.2cqi;
@@ -78,17 +78,17 @@
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 .5cqi 0 #050505,0 .7cqi 1.2cqi rgba(0,0,0,.6);
   transition:transform .08s,box-shadow .08s}
 .deck-start:active,.deck-start.druk{transform:translateY(.4cqi);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 .1cqi 0 #050505,0 .2cqi .5cqi rgba(0,0,0,.6)}
-.deck-snelheid{display:flex;gap:.8cqi}
-.deck-rpm{position:relative;width:5.6cqi;height:4.4cqi;border-radius:.45cqi;border:1px solid #000;cursor:pointer;color:#cfd2d6;
-  font:700 1.5cqi/1 var(--font);display:grid;place-items:center;
+.deck-snelheid{position:absolute;right:3.2%;top:43%;width:9%;display:flex;flex-direction:column;gap:1.3cqi}
+.deck-rpm{position:relative;width:100%;height:4.4cqi;border-radius:.45cqi;border:1px solid #000;cursor:pointer;color:#cfd2d6;
+  font:700 1.5cqi/1 var(--font);display:flex;align-items:center;justify-content:center;gap:.9cqi;
   background:linear-gradient(#3a3b3f,#232427 55%,#1b1c1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 .35cqi 0 #050505}
-.deck-rpm .led{position:absolute;top:-1.5cqi;left:50%;translate:-50% 0;width:.9cqi;height:.9cqi}
+.deck-rpm .led{width:.9cqi;height:.9cqi}
 .deck-rpm[aria-pressed="true"]{transform:translateY(.25cqi);box-shadow:inset 0 1px 2px rgba(0,0,0,.5),0 .1cqi 0 #050505}
 .deck-rpm[aria-pressed="true"] .led{background:var(--led-aan);box-shadow:0 0 .8cqi var(--led-gloed)}
 .deck-start:focus-visible,.deck-rpm:focus-visible{outline:2px solid var(--oranje);outline-offset:3px}
 
 /* pitch-fader rechtsvoor: −8 boven, +8 onder, zoals op een SL1200 */
-.deck-pitch{position:absolute;right:3.2%;top:47%;bottom:4%;width:9%;display:grid;grid-template-columns:1fr auto;align-items:stretch;column-gap:.6cqi}
+.deck-pitch{position:absolute;right:3.2%;top:64%;bottom:4%;width:9%;display:grid;grid-template-columns:1fr auto;align-items:stretch;column-gap:.6cqi}
 .deck-pitch-schaal{display:flex;flex-direction:column;justify-content:space-between;font-size:1.2cqi;color:#8e9298;text-align:right;padding-block:.4cqi}
 .deck-pitch-schaal b{font-weight:500}
 .deck-fader{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;width:3.4cqi;height:100%;margin:0;background:transparent;cursor:ns-resize;touch-action:none}
@@ -100,7 +100,7 @@
 .deck-fader::-moz-range-thumb{width:3.4cqi;height:4.6cqi;border-radius:.4cqi;border:1px solid #000;
   background:linear-gradient(90deg,#2c2d30,#55575c 30%,#2a2b2e 50%,#55575c 70%,#2c2d30)}
 .deck-fader:focus-visible{outline:2px solid var(--oranje);outline-offset:3px;border-radius:.4cqi}
-.deck-pitch-waarde{position:absolute;right:0;top:-4.2cqi;font-size:1.3cqi;color:#ffb27c;background:#0a0a0b;padding:.35cqi .6cqi;border-radius:.3cqi;box-shadow:inset 0 1px 2px #000}
+.deck-pitch-waarde{position:absolute;left:0;bottom:calc(100% + .8cqi);font-size:1.3cqi;color:#ffb27c;background:#0a0a0b;padding:.35cqi .6cqi;border-radius:.3cqi;box-shadow:inset 0 1px 2px #000}
 
 .deck-model{position:absolute;right:3.2%;top:3.4%;font-size:1.05cqi;letter-spacing:.14em;color:#7d8187;text-transform:uppercase}
 

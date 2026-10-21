@@ -70,10 +70,11 @@ const stippen = rijen.flatMap(({ r, n }) =>
     <button class="deck-start" type="button" aria-pressed="false" data-start>
       <span>START<br />STOP</span>
     </button>
-    <div class="deck-snelheid" role="group" aria-label={t(lang, "Snelheid", "Speed")}>
-      <button class="deck-rpm" type="button" aria-pressed="true" data-rpm="33.333"><i class="led"></i><span>33</span></button>
-      <button class="deck-rpm" type="button" aria-pressed="false" data-rpm="45"><i class="led"></i><span>45</span></button>
-    </div>
+  </div>
+
+  <div class="deck-snelheid" role="group" aria-label={t(lang, "Snelheid", "Speed")}>
+    <button class="deck-rpm" type="button" aria-pressed="true" data-rpm="33.333"><i class="led"></i><span>33</span></button>
+    <button class="deck-rpm" type="button" aria-pressed="false" data-rpm="45"><i class="led"></i><span>45</span></button>
   </div>
 
   <div class="deck-pitch">
