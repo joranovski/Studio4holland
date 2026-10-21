@@ -8,7 +8,7 @@ export const GET: APIRoute = async ({ site }) => {
   const paren: { nl: string; en: string }[] = [];
   for (const id of ["home", "contact"]) {
     const s = await getSection(id, "nl");
-    if (s) paren.push(id === "contact" ? { nl: "/nl/contact/", en: "/en/contact/" } : s.alt);
+    if (s) paren.push(id === "contact" ? { nl: "/nl/contact", en: "/en/contact" } : s.alt);
   }
   for (const s of await getNav("nl")) paren.push(s.alt);
   for (const sec of SECTIONS) for (const i of await getItems(sec, "nl")) paren.push(i.alt);

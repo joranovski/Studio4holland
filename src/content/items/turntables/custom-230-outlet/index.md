@@ -5,4 +5,5 @@ listed: true
 cover: 230v-outlet.jpeg
 images:
 - src: 230v-outlet.jpeg
+metaTitle: custom 220v / 240v inlet
 ---

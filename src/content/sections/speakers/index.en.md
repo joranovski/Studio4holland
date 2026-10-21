@@ -2,6 +2,7 @@
 title: Speakers
 subtitle: great
 metaTitle: Studio 4 Holland - Custom build speakers
+metaDescription: Want to have a bespoke speaker built with fantastic sound, we are the right place for that.
 ---
 
 We create custom speakers following a really great concept

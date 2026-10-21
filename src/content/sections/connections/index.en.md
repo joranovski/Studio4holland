@@ -1,6 +1,7 @@
 ---
 title: Connections
 subtitle: Connecties
+metaDescription: We are proud of all our connections but of course the most about our connection with Yello
 ---
 
 ## Mijn connecties met Yello

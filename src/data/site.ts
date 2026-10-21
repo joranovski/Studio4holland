@@ -15,10 +15,16 @@ export const site = {
   kvk: "6247811",
   btw: "NL002422012B96",
   since: 2001,
-  keywords: "Studio 4 Holland, Technics, SL1200, SL1210, draaitafel reparatie, turntable repair, customization, speakers",
+  // SEO zoals op de oude site: elke paginatitel eindigt op deze zin (bijv. "Drum draaitafel - Het beste adres voor Technics reparatie")
+  titleSuffix: {
+    nl: "Het beste adres voor Technics reparatie",
+    en: "The best address for Technics repair",
+  },
+  keywords: "STUDIO4HOLLAND, SL1200, technicsfarm, repair, maintenance",
+  // Standaardbeschrijving als een pagina geen eigen beschrijving en geen tekst heeft (de oude site gebruikte deze overal)
   description: {
-    nl: "Studio 4 Holland in Nijkerk: reparatie, onderhoud en customizing van Technics-draaitafels, luidsprekers op maat, Hextech-voetjes en interieurs.",
-    en: "Studio 4 Holland in Nijkerk, the Netherlands: Technics turntable repair, maintenance and customisation, bespoke speakers, Hextech feet and interiors.",
+    nl: "Voor al je reparaties aan Technics platenspelers maar ook custom made luidsprekers en platenspelers.",
+    en: "For all your Technics turntable repairs, plus custom made speakers and turntables.",
   },
 };
 

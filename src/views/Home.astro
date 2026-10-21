@@ -34,7 +34,7 @@ const schema = {
   description: site.description[lang],
 };
 ---
-<Base lang={lang} description={home.metaDescription ?? site.description[lang]} alt={home.alt} current="home" schema={schema}>
+<Base lang={lang} title={home.metaTitle ?? home.title} description={home.metaDescription ?? site.description[lang]} alt={home.alt} current="home" schema={schema}>
   <section class="held">
     <div class="wrap held-raster">
       <div class="held-tekst">

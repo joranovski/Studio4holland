@@ -9,6 +9,7 @@ images:
 - src: 20170917_094002.jpg
 - src: whatsapp-image-2021-04-28-at-19.53.26.jpeg
 - src: 20170917_094344.jpg
+metaDescription: Onze unieke schok absorberende draaitafelvoet, beschikbaar in een veeltal aan kleuren
 ---
 
 ## Introducing Hextech feet

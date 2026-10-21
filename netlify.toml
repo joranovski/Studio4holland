@@ -14,35 +14,35 @@
 # force = true, want er staat ook een index.html op / (terugval zonder Netlify).
 [[redirects]]
   from = "/"
-  to = "/en/"
+  to = "/en"
   status = 302
   force = true
   conditions = {Language = ["en"]}
 
 [[redirects]]
   from = "/"
-  to = "/nl/"
+  to = "/nl"
   status = 302
   force = true
 
 # ── Oude Kirby-adressen ──────────────────────────────────
-# De adressen /nl/<sectie>/<item> en /en/<sectie>/<item> zijn hetzelfde gebleven.
-# Netlify plakt zelf de slash erachter (/nl/turntables/drum-deck → /nl/turntables/drum-deck/).
+# De adressen /nl/<sectie>/<item> en /en/<sectie>/<item> zijn precies hetzelfde gebleven, ook zonder
+# slash aan het eind. Astro bouwt drum-deck.html; Netlify serveert die op /nl/turntables/drum-deck.
 
 # Kirby kende ook pagina-adressen zonder taal
 [[redirects]]
   from = "/home"
-  to = "/nl/"
+  to = "/nl"
   status = 301
 
 [[redirects]]
   from = "/nl/home"
-  to = "/nl/"
+  to = "/nl"
   status = 301
 
 [[redirects]]
   from = "/en/home"
-  to = "/en/"
+  to = "/en"
   status = 301
 
 [[redirects]]
@@ -87,24 +87,24 @@
 
 [[redirects]]
   from = "/contact"
-  to = "/nl/contact/"
+  to = "/nl/contact"
   status = 301
 
 # Directe links naar oude foto's (/media/pages/<sectie>/…) gaan naar de sectie
 [[redirects]]
   from = "/media/pages/home/*"
-  to = "/nl/"
+  to = "/nl"
   status = 301
 
 [[redirects]]
   from = "/media/pages/:section/*"
-  to = "/nl/:section/"
+  to = "/nl/:section"
   status = 301
 
 # Het Kirby-paneel bestaat niet meer
 [[redirects]]
   from = "/panel/*"
-  to = "/nl/"
+  to = "/nl"
   status = 301
 
 # ── Items die (nog) niet op de nieuwe site staan ─────────
@@ -113,12 +113,12 @@
 # nieuwere items van de live site later nog worden toegevoegd.
 [[redirects]]
   from = "/nl/:section/*"
-  to = "/nl/:section/"
+  to = "/nl/:section"
   status = 302
 
 [[redirects]]
   from = "/en/:section/*"
-  to = "/en/:section/"
+  to = "/en/:section"
   status = 302
 
 # ── Headers ─────────────────────────────────────────────

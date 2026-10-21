@@ -5,10 +5,10 @@ listed: true
 tags:
 - luidsprekers
 subtitle: Wat een geweldige speakers
-metaTitle: Studio 4 Holland - Custom build speakers
 cover: lrcrs.jpg
 images:
 - src: lrcrs.jpg
+metaDescription: Op maat gemaakte luidsprekers die zorgen voor een fraai gedetailleerde geluidsweergave.
 ---
 
 ## Op maat gemaakt

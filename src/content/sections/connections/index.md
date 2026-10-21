@@ -12,6 +12,7 @@ images:
 - src: dsc_4999.jpg
 - src: dsc_5012.jpg
 - src: dsc_5246.jpg
+metaDescription: We zijn trots op al onze connecties maar natuurlijk helemaal met Yello
 ---
 
 ## Mijn connecties met Yello

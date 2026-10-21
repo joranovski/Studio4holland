@@ -22,7 +22,7 @@ const heeftTekst = !!(page.lang === "en" && page.en?.body?.trim() ? page.en.body
 const enkel = page.photos.length === 1 ? page.photos[0] : undefined;
 const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repairs"].includes(page.section) ? draaitafelLijn : undefined;
 ---
-<Base lang={lang} title={page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover}>
+<Base lang={lang} title={page.metaTitle ?? page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover}>
   <section class="sectie">
     <div class="wrap">
       <div class="tab-rij">

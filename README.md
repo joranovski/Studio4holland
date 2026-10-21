@@ -32,7 +32,7 @@ npm run build    # bouwt de site in dist/ (de eerste keer duurt dit even: alle f
 
 ## Beheer (CMS)
 
-Teksten en foto's bewerken kan in de browser via **/admin/** ([Sveltia CMS](https://sveltiacms.app)).
+Teksten en foto's bewerken kan in de browser via **/admin** ([Sveltia CMS](https://sveltiacms.app)).
 Het beheer bewerkt dezelfde Markdown-bestanden als hierboven; opslaan is een commit op GitHub, en Netlify zet het daarna automatisch live (± 2–3 minuten).
 Instellingen: `public/admin/config.yml`.
 
@@ -50,12 +50,25 @@ Grote telefoonfoto's worden bij het uploaden verkleind tot 2400 px (WebP); de si
    Homepage: de site-URL; **Authorization callback URL: `https://api.netlify.com/auth/done`**.
 4. In Netlify: *Project configuration → Security → OAuth → Install provider → GitHub*, met de Client ID en Client Secret uit stap 3.
 5. Leon maakt een gratis GitHub-account; geef hem in de repo *Settings → Collaborators* schrijfrechten.
-6. Leon gaat naar `https://www.studio4holland.nl/admin/` en kiest **Sign In with GitHub**.
+6. Leon gaat naar `https://www.studio4holland.nl/admin` en kiest **Sign In with GitHub**.
 
 ### Lokaal proberen (zonder GitHub)
 
-`npm run dev`, open in Chrome of Edge `http://localhost:4321/admin/` en kies **Work with Local Repository**; selecteer de map `st4hl-astro`.
+`npm run dev`, open in Chrome of Edge `http://localhost:4321/admin` (zonder slash) en kies **Work with Local Repository**; selecteer de map `st4hl-astro`.
 Wijzigingen komen direct in je bestanden; de dev-server laat ze meteen zien. Committen doe je zelf.
+
+## Vindbaarheid (SEO)
+
+De nieuwe site houdt alles wat Google nu van studio4holland.nl kent:
+
+- **Dezelfde adressen**, ook zonder slash aan het eind (`/nl/turntables/drum-deck`). Daarom bouwt Astro losse `.html`-bestanden (`build.format: "file"`).
+- **Dezelfde titels**: "<titel> - Het beste adres voor Technics reparatie" (Engels: "… - The best address for Technics repair"); de vaste zin staat in `src/data/site.ts`.
+- **Dezelfde SEO-titels en -beschrijvingen** als op de live site (`metaTitle` en `metaDescription` in de content), op 21 oktober 2026 opgehaald in
+  `scripts/seo-live-2026-10-21.json`. Na een nieuwe import uit Kirby: `python3 scripts/seo-live.py scripts/seo-live-2026-10-21.json`.
+- **Nieuw erbij**: een sitemap (`/sitemap.xml`), `robots.txt`, `hreflang` tussen NL en EN, gestructureerde gegevens (JSON-LD),
+  de juiste taal op elke pagina (de oude site zei overal `lang="en"`), en een meta-description op elke pagina.
+
+Na de overstap: meld `https://www.studio4holland.nl/sitemap.xml` aan in Google Search Console.
 
 ## Talen
 

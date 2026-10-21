@@ -1,8 +1,8 @@
 ---
 title: Welkom
 listed: false
-metaTitle: Studio 4 Holland - Welkom voor al jouw technics draaitafel onderhoud en reparatie
-metaDescription: Studio4Holland,  jouw adres voor draaitafel onderhoud, ontwerp, bouw en reparatie
+metaTitle: Studio 4 Holland - Welkom voor al jouw technics reparaties aan draaitafel maar ook onderhoud
+metaDescription: Studio4Holland, jouw adres voor draaitafel onderhoud, ontwerp, bouw en reparatie
 cover: collection-custom-230v-outlets.jpeg
 images:
 - src: collection-custom-230v-outlets.jpeg

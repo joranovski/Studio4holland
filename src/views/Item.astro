@@ -27,7 +27,7 @@ const schema = {
   ...(page.forSale ? { brand: { "@type": "Brand", name: site.name } } : { creator: { "@type": "Organization", name: site.name } }),
 };
 ---
-<Base lang={lang} title={page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover ?? page.photos[0]?.src} schema={schema}>
+<Base lang={lang} title={page.metaTitle ?? page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover ?? page.photos[0]?.src} schema={schema}>
   <article class="sectie">
     <div class="wrap">
       <nav class="kruimel" aria-label={t(lang, "Kruimelpad", "Breadcrumb")}>

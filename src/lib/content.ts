@@ -64,8 +64,9 @@ function build(kind: Page["kind"], nl: Nl, en: En | undefined, lang: Lang): Page
   const enSlug = slugOf(nl.id, en?.data.slug ?? nl.data.slug);
   const path = (l: Lang) => {
     const s = l === "en" ? enSlug : nlSlug;
-    if (kind === "section") return section === "home" ? `/${l}/` : `/${l}/${s}/`;
-    return `/${l}/${section}/${s}/`;
+    // Zonder slash aan het eind, precies zoals de adressen op de oude Kirby-site (goed voor de vindbaarheid)
+    if (kind === "section") return section === "home" ? `/${l}` : `/${l}/${s}`;
+    return `/${l}/${section}/${s}`;
   };
   const useEn = lang === "en" && en;
   const d = nl.data;

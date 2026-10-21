@@ -45,4 +45,4 @@ export type Woord = keyof typeof woorden;
 export const w = (lang: Lang, key: Woord) => woorden[key][lang === "en" ? 1 : 0];
 
 /** Bedankpagina na het formulier */
-export const thanksPath = (lang: Lang) => t(lang, "/nl/bedankt/", "/en/thanks/");
+export const thanksPath = (lang: Lang) => t(lang, "/nl/bedankt", "/en/thanks");

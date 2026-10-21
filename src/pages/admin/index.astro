@@ -1,5 +1,5 @@
 ---
-// Het beheer (Sveltia CMS) op /admin/. Een gewone pagina in plaats van public/admin/index.html,
+// Het beheer (Sveltia CMS) op /admin. Een gewone pagina in plaats van public/admin/index.html,
 // zodat /admin/ ook in "npm run dev" werkt. De instellingen staan in public/admin/config.yml.
 ---
 <!doctype html>
@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Beheer · Studio 4 Holland</title>
     <link rel="icon" type="image/png" href="/icon-192.png" />
+    <!-- het beheer staat op /admin (zonder slash); wijs de instellingen daarom expliciet aan -->
+    <link href="/admin/config.yml" type="application/yaml" rel="cms-config-url" />
   </head>
   <body>
     <script is:inline src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>

@@ -3,8 +3,10 @@ import { defineConfig } from "astro/config";
 
 export default defineConfig({
   site: "https://www.studio4holland.nl",
-  trailingSlash: "always",
-  build: { format: "directory" },
+  // Adressen zonder slash aan het eind (/nl/turntables/drum-deck), net als op de oude site:
+  // zo blijven alle adressen die Google kent precies gelijk. Netlify serveert drum-deck.html op /…/drum-deck.
+  trailingSlash: "never",
+  build: { format: "file" },
   image: {
     service: {
       entrypoint: "astro/assets/services/sharp",

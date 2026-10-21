@@ -10,6 +10,8 @@ images:
 - src: sl-technics-on-workbench.jpeg
 - src: tonearm-closeup.jpeg
 - src: turntables-on-display.jpeg
+metaTitle: Technics reparatie Draaitafels
+metaDescription: Jouw one stop shop voor technics reparatie en andere draaitafels. Ook voor onderhoud of customisatie
 ---
 
 ### Involvement

@@ -7,6 +7,8 @@ cover: sl-repair-look-inside.jpeg
 images:
 - src: sl-repair-look-inside.jpeg
   caption: SL repair look inside
+metaTitle: Technics reparaties
+metaDescription: Reparaties aan Technics draaitafels en andere merk platenspelers. Maar ook andere audioapparatuur
 ---
 
 ## Repairs and customization

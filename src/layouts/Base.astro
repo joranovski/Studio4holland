@@ -26,9 +26,12 @@ interface Props {
   noindex?: boolean;
   schema?: Record<string, unknown> | Record<string, unknown>[];
 }
-const { lang, title, description = site.description[lang], alt = { nl: "/nl/", en: "/en/" }, current, image, noindex = false, schema } = Astro.props;
-const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t(lang, "Technics-reparatie, custom draaitafels en speakers", "Technics repair, custom turntables and speakers")}`;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const { lang, title, description = site.description[lang], alt = { nl: "/nl", en: "/en" }, current, image, noindex = false, schema } = Astro.props;
+// Titel zoals op de oude site: "<paginatitel> - Het beste adres voor Technics reparatie"
+const fullTitle = `${(title ?? site.name).replace(/\s+/g, " ").trim()} - ${site.titleSuffix[lang]}`;
+// Adres zonder .html en zonder slash aan het eind, zoals op de oude site
+const pad = Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/(.)\/$/, "$1") || "/";
+const canonical = new URL(pad, Astro.site);
 const og = await getImage({ src: image ?? deelbeeld, width: 1200, height: 630, fit: "cover", format: "jpg", quality: 78 });
 const ogUrl = new URL(og.src, Astro.site).href;
 const abs = (p: string) => new URL(p, Astro.site).href;
@@ -40,6 +43,7 @@ const abs = (p: string) => new URL(p, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={site.keywords} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     {!noindex && <link rel="alternate" hreflang="nl" href={abs(alt.nl)} />}
@@ -56,7 +60,8 @@ const abs = (p: string) => new URL(p, Astro.site).href;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content={t(lang, "nl_NL", "en_GB")} />
+    <meta property="og:locale" content={t(lang, "nl_NL", "en_US")} />
+    <meta property="og:locale:alternate" content={t(lang, "en_US", "nl_NL")} />
     <meta property="og:image" content={ogUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

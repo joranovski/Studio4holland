@@ -4,13 +4,13 @@ import { t, type Lang } from "../i18n";
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
-<Base lang={lang} title={t(lang, "Bedankt", "Thank you")} noindex alt={{ nl: "/nl/bedankt/", en: "/en/thanks/" }}>
+<Base lang={lang} title={t(lang, "Bedankt", "Thank you")} noindex alt={{ nl: "/nl/bedankt", en: "/en/thanks" }}>
   <section class="wrap niet-gevonden">
     <div class="kras" aria-hidden="true" style="--x:0"></div>
     <div>
       <h1>{t(lang, "Bedankt voor je bericht!", "Thank you for your message!")}</h1>
       <p>{t(lang, "We nemen zo snel mogelijk contact met je op.", "We will get back to you as soon as possible.")}</p>
-      <p style="margin-top:24px"><a class="knop" href={`/${lang}/`}>{t(lang, "Terug naar de homepage", "Back to the homepage")}</a></p>
+      <p style="margin-top:24px"><a class="knop" href={`/${lang}`}>{t(lang, "Terug naar de homepage", "Back to the homepage")}</a></p>
     </div>
   </section>
 </Base>

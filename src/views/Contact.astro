@@ -11,7 +11,7 @@ const { lang } = Astro.props;
 const page = (await getSection("contact", lang))!;
 const { Content } = await renderBody(page);
 ---
-<Base lang={lang} title={page.title} description={page.excerpt || undefined} alt={page.alt} current="contact">
+<Base lang={lang} title={page.metaTitle ?? page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current="contact">
   <section class="sectie">
     <div class="wrap">
       <h1 class="tab"><Icon name="card" size={26} />{page.title}</h1>

@@ -1,6 +1,6 @@
 ---
 title: Welcome to Studio 4 Holland
-metaTitle: Studio 4 Holland -  for technics turntable maintenance, repairs and customization
+metaTitle: Studio 4 Holland - for technics turntable maintenance, repairs and customization
 metaDescription: The best address for you technics repair and customization
 ---
 
