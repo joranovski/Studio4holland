@@ -5,6 +5,9 @@ Opvolger van de Kirby/PHP-site in `../st4hl`: dezelfde content en adressen, opge
 
 ## Werken aan de site
 
+Nodig: Node.js 22.12 of nieuwer (Astro staat vast op 7.3.x, net als bij createfromcore.nl).
+Astro 7.4 en hoger vraagt Node 22.22; update eerst Node voordat je Astro ophoogt.
+
 ```sh
 npm install      # eenmalig
 npm run dev      # live voorbeeld op http://localhost:4321
