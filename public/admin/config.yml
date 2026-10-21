@@ -1,0 +1,838 @@
+# ══════════════════════════════════════════════════════════
+# Sveltia CMS · Studio 4 Holland
+# Het beheer staat op /admin/. Het bewerkt dezelfde Markdown-bestanden als in de repo:
+#   src/content/items/<sectie>/<naam>/index.md     (Nederlands)
+#   src/content/items/<sectie>/<naam>/index.en.md  (Engels, optioneel)
+# met de foto's in dezelfde map. Opslaan = een commit op GitHub = Netlify zet het live.
+# Uitleg en inrichting: zie README.md, kopje "Beheer (CMS)".
+# ══════════════════════════════════════════════════════════
+
+# Dit bestand is helemaal uitgeschreven (geen YAML-ankers), zodat het CMS het zeker goed leest.
+# Inloggen gaat via de GitHub-provider van Netlify (Project configuration → Security → OAuth).
+# Krijgt de GitHub-repo een andere naam, pas dan `repo` hieronder aan.
+
+backend:
+  name: github
+  repo: joranovski/studio4holland
+  branch: main
+
+site_url: https://www.studio4holland.nl
+
+display_url: https://www.studio4holland.nl
+
+media_folder: public/media
+
+public_folder: /media
+
+media_libraries:
+  default:
+    config:
+      transformations:
+        raster_image:
+          format: webp
+          quality: 90
+          width: 2400
+          height: 2400
+
+i18n:
+  structure: multiple_files
+  locales:
+  - nl
+  - en
+  default_locale: nl
+  omit_default_locale_from_file_path: true
+  initial_locales: default
+
+collections:
+
+- name: turntables
+  label: Draaitafels
+  label_singular: Draaitafel
+  folder: src/content/items/turntables
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: true
+  i18n: true
+  identifier_field: title
+  summary: '{{title}}'
+  sortable_fields:
+    fields:
+    - order
+    - title
+    - year
+    default:
+      field: order
+      direction: ascending
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto
+    widget: image
+    required: false
+    hint: De foto op het kaartje in de lijst. Kies bij voorkeur ook een foto uit de lijst hieronder.
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    hint: De volgorde hier is de volgorde op de site. Sleep om te verplaatsen.
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+      hint: Wat staat er op de foto? Leeg laten mag; dan wordt het bijschrift gebruikt.
+  - name: year
+    label: Jaar
+    widget: number
+    value_type: int
+    required: false
+  - name: tags
+    label: Trefwoorden
+    widget: list
+    required: false
+  - name: forSale
+    label: Te koop
+    widget: boolean
+    default: false
+    required: false
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+  - name: uitgelicht
+    label: Uitgelicht op de homepage
+    widget: boolean
+    default: false
+    required: false
+  - name: listed
+    label: Zichtbaar in de lijst
+    widget: boolean
+    default: true
+    required: false
+    hint: Uit = niet in de lijsten, wel bereikbaar via de link.
+  - name: order
+    label: Volgorde
+    widget: number
+    value_type: int
+    required: false
+    hint: Lager nummer = eerder in de lijst.
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres (optioneel)
+    widget: string
+    required: false
+    i18n: true
+    hint: Alleen invullen als het adres anders moet zijn dan de mapnaam, bijvoorbeeld een Engelse naam voor de Engelse versie.
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: draft
+    label: Concept
+    widget: hidden
+
+- name: speakers
+  label: Luidsprekers
+  label_singular: Luidspreker
+  folder: src/content/items/speakers
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: true
+  i18n: true
+  identifier_field: title
+  summary: '{{title}}'
+  sortable_fields:
+    fields:
+    - order
+    - title
+    - year
+    default:
+      field: order
+      direction: ascending
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto
+    widget: image
+    required: false
+    hint: De foto op het kaartje in de lijst. Kies bij voorkeur ook een foto uit de lijst hieronder.
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    hint: De volgorde hier is de volgorde op de site. Sleep om te verplaatsen.
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+      hint: Wat staat er op de foto? Leeg laten mag; dan wordt het bijschrift gebruikt.
+  - name: year
+    label: Jaar
+    widget: number
+    value_type: int
+    required: false
+  - name: tags
+    label: Trefwoorden
+    widget: list
+    required: false
+  - name: forSale
+    label: Te koop
+    widget: boolean
+    default: false
+    required: false
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+  - name: uitgelicht
+    label: Uitgelicht op de homepage
+    widget: boolean
+    default: false
+    required: false
+  - name: listed
+    label: Zichtbaar in de lijst
+    widget: boolean
+    default: true
+    required: false
+    hint: Uit = niet in de lijsten, wel bereikbaar via de link.
+  - name: order
+    label: Volgorde
+    widget: number
+    value_type: int
+    required: false
+    hint: Lager nummer = eerder in de lijst.
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres (optioneel)
+    widget: string
+    required: false
+    i18n: true
+    hint: Alleen invullen als het adres anders moet zijn dan de mapnaam, bijvoorbeeld een Engelse naam voor de Engelse versie.
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: draft
+    label: Concept
+    widget: hidden
+
+- name: repairs
+  label: Reparaties
+  label_singular: Reparatie
+  folder: src/content/items/repairs
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: true
+  i18n: true
+  identifier_field: title
+  summary: '{{title}}'
+  sortable_fields:
+    fields:
+    - order
+    - title
+    - year
+    default:
+      field: order
+      direction: ascending
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto
+    widget: image
+    required: false
+    hint: De foto op het kaartje in de lijst. Kies bij voorkeur ook een foto uit de lijst hieronder.
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    hint: De volgorde hier is de volgorde op de site. Sleep om te verplaatsen.
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+      hint: Wat staat er op de foto? Leeg laten mag; dan wordt het bijschrift gebruikt.
+  - name: year
+    label: Jaar
+    widget: number
+    value_type: int
+    required: false
+  - name: tags
+    label: Trefwoorden
+    widget: list
+    required: false
+  - name: forSale
+    label: Te koop
+    widget: boolean
+    default: false
+    required: false
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+  - name: uitgelicht
+    label: Uitgelicht op de homepage
+    widget: boolean
+    default: false
+    required: false
+  - name: listed
+    label: Zichtbaar in de lijst
+    widget: boolean
+    default: true
+    required: false
+    hint: Uit = niet in de lijsten, wel bereikbaar via de link.
+  - name: order
+    label: Volgorde
+    widget: number
+    value_type: int
+    required: false
+    hint: Lager nummer = eerder in de lijst.
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres (optioneel)
+    widget: string
+    required: false
+    i18n: true
+    hint: Alleen invullen als het adres anders moet zijn dan de mapnaam, bijvoorbeeld een Engelse naam voor de Engelse versie.
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: draft
+    label: Concept
+    widget: hidden
+
+- name: hextech-feet
+  label: Hextech voetjes
+  label_singular: Hextech voetje
+  folder: src/content/items/hextech-feet
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: true
+  i18n: true
+  identifier_field: title
+  summary: '{{title}}'
+  sortable_fields:
+    fields:
+    - order
+    - title
+    - year
+    default:
+      field: order
+      direction: ascending
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto
+    widget: image
+    required: false
+    hint: De foto op het kaartje in de lijst. Kies bij voorkeur ook een foto uit de lijst hieronder.
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    hint: De volgorde hier is de volgorde op de site. Sleep om te verplaatsen.
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+      hint: Wat staat er op de foto? Leeg laten mag; dan wordt het bijschrift gebruikt.
+  - name: year
+    label: Jaar
+    widget: number
+    value_type: int
+    required: false
+  - name: tags
+    label: Trefwoorden
+    widget: list
+    required: false
+  - name: forSale
+    label: Te koop
+    widget: boolean
+    default: false
+    required: false
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+  - name: uitgelicht
+    label: Uitgelicht op de homepage
+    widget: boolean
+    default: false
+    required: false
+  - name: listed
+    label: Zichtbaar in de lijst
+    widget: boolean
+    default: true
+    required: false
+    hint: Uit = niet in de lijsten, wel bereikbaar via de link.
+  - name: order
+    label: Volgorde
+    widget: number
+    value_type: int
+    required: false
+    hint: Lager nummer = eerder in de lijst.
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres (optioneel)
+    widget: string
+    required: false
+    i18n: true
+    hint: Alleen invullen als het adres anders moet zijn dan de mapnaam, bijvoorbeeld een Engelse naam voor de Engelse versie.
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: draft
+    label: Concept
+    widget: hidden
+
+- name: connections
+  label: Connecties
+  label_singular: Connectie
+  folder: src/content/items/connections
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: true
+  i18n: true
+  identifier_field: title
+  summary: '{{title}}'
+  sortable_fields:
+    fields:
+    - order
+    - title
+    - year
+    default:
+      field: order
+      direction: ascending
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto
+    widget: image
+    required: false
+    hint: De foto op het kaartje in de lijst. Kies bij voorkeur ook een foto uit de lijst hieronder.
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    hint: De volgorde hier is de volgorde op de site. Sleep om te verplaatsen.
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+      hint: Wat staat er op de foto? Leeg laten mag; dan wordt het bijschrift gebruikt.
+  - name: year
+    label: Jaar
+    widget: number
+    value_type: int
+    required: false
+  - name: tags
+    label: Trefwoorden
+    widget: list
+    required: false
+  - name: forSale
+    label: Te koop
+    widget: boolean
+    default: false
+    required: false
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+  - name: uitgelicht
+    label: Uitgelicht op de homepage
+    widget: boolean
+    default: false
+    required: false
+  - name: listed
+    label: Zichtbaar in de lijst
+    widget: boolean
+    default: true
+    required: false
+    hint: Uit = niet in de lijsten, wel bereikbaar via de link.
+  - name: order
+    label: Volgorde
+    widget: number
+    value_type: int
+    required: false
+    hint: Lager nummer = eerder in de lijst.
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres (optioneel)
+    widget: string
+    required: false
+    i18n: true
+    hint: Alleen invullen als het adres anders moet zijn dan de mapnaam, bijvoorbeeld een Engelse naam voor de Engelse versie.
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: draft
+    label: Concept
+    widget: hidden
+
+- name: interiors
+  label: Interieur & meubels
+  label_singular: Interieur
+  folder: src/content/items/interiors
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: true
+  i18n: true
+  identifier_field: title
+  summary: '{{title}}'
+  sortable_fields:
+    fields:
+    - order
+    - title
+    - year
+    default:
+      field: order
+      direction: ascending
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto
+    widget: image
+    required: false
+    hint: De foto op het kaartje in de lijst. Kies bij voorkeur ook een foto uit de lijst hieronder.
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    hint: De volgorde hier is de volgorde op de site. Sleep om te verplaatsen.
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+      hint: Wat staat er op de foto? Leeg laten mag; dan wordt het bijschrift gebruikt.
+  - name: year
+    label: Jaar
+    widget: number
+    value_type: int
+    required: false
+  - name: tags
+    label: Trefwoorden
+    widget: list
+    required: false
+  - name: forSale
+    label: Te koop
+    widget: boolean
+    default: false
+    required: false
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+  - name: uitgelicht
+    label: Uitgelicht op de homepage
+    widget: boolean
+    default: false
+    required: false
+  - name: listed
+    label: Zichtbaar in de lijst
+    widget: boolean
+    default: true
+    required: false
+    hint: Uit = niet in de lijsten, wel bereikbaar via de link.
+  - name: order
+    label: Volgorde
+    widget: number
+    value_type: int
+    required: false
+    hint: Lager nummer = eerder in de lijst.
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres (optioneel)
+    widget: string
+    required: false
+    i18n: true
+    hint: Alleen invullen als het adres anders moet zijn dan de mapnaam, bijvoorbeeld een Engelse naam voor de Engelse versie.
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: draft
+    label: Concept
+    widget: hidden
+
+- name: pages
+  label: Pagina's
+  label_singular: Pagina
+  folder: src/content/sections
+  path: '{{slug}}/index'
+  media_folder: ''
+  public_folder: ''
+  extension: md
+  format: frontmatter
+  create: false
+  delete: false
+  i18n: true
+  summary: '{{title}}'
+  fields:
+  - name: title
+    label: Titel
+    widget: string
+    i18n: true
+  - name: subtitle
+    label: Ondertitel
+    widget: string
+    required: false
+    i18n: true
+  - name: body
+    label: Tekst
+    widget: richtext
+    required: false
+    i18n: true
+  - name: cover
+    label: Hoofdfoto (voor delen op sociale media)
+    widget: image
+    required: false
+  - name: images
+    label: Foto's
+    label_singular: Foto
+    widget: list
+    required: false
+    summary: '{{fields.caption}}'
+    fields:
+    - name: src
+      label: Foto
+      widget: image
+    - name: caption
+      label: Bijschrift (Nederlands)
+      widget: string
+      required: false
+    - name: captionEn
+      label: Bijschrift (Engels)
+      widget: string
+      required: false
+    - name: alt
+      label: Omschrijving voor schermlezers
+      widget: string
+      required: false
+  - name: metaTitle
+    label: Titel voor Google (optioneel)
+    widget: string
+    required: false
+    i18n: true
+  - name: metaDescription
+    label: Omschrijving voor Google (optioneel)
+    widget: text
+    required: false
+    i18n: true
+  - name: slug
+    label: Eigen adres
+    widget: hidden
+    i18n: true
+  - name: order
+    label: Volgorde
+    widget: hidden
+  - name: listed
+    label: Zichtbaar
+    widget: hidden
+  - name: street
+    label: Straat
+    widget: hidden
+  - name: zip
+    label: Postcode
+    widget: hidden
+  - name: location
+    label: Plaats
+    widget: hidden
+  - name: phone
+    label: Telefoon
+    widget: hidden
+  - name: email
+    label: E-mail
+    widget: hidden

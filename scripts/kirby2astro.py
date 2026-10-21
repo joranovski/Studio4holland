@@ -36,6 +36,8 @@ SECTION_TEMPLATES = {"speakers", "turntables", "hextech-feet", "repairs", "conne
 ITEM_TEMPLATES = {"speaker", "turntable", "hextech-foot", "repair", "connection", "interior"}
 SKIP_DIRS = {"login", "error"}
 
+UITGELICHT: set = set()
+TE_KOOP: set = set()
 stats = {"secties": 0, "items": 0, "afbeeldingen": 0, "zonder_engels": [], "lege_tekst": []}
 
 
@@ -133,7 +135,7 @@ def blocks_to_md(raw: str):
                 parts.append(f"![{c.get('alt', '')}]({c['src']})")
             for f in kirby_list(json.dumps(c.get("image") or [])) if isinstance(c.get("image"), list) else []:
                 inline.append(f)
-                parts.append(f"![{strip_tags(c.get('alt', '')) or strip_tags(c.get('caption', ''))}](./{slug_file(f)})")
+                parts.append(f"![{strip_tags(c.get('alt', '')) or strip_tags(c.get('caption', ''))}]({slug_file(f)})")
         elif t == "gallery":
             gallery += [str(x) for x in (c.get("images") or [])]
         else:
@@ -285,9 +287,9 @@ def convert(folder: Path, target: Path, kind: str, extra: dict | None = None):
         "subtitle": strip_tags(nl.get("subheadline") or nl.get("headline") or nl.get("description") or "") or None,
         "metaTitle": nl.get("meta-title") or None,
         "metaDescription": nl.get("meta-description") or None,
-        "cover": f"./{cover}" if cover else None,
+        "cover": cover or None,
         "images": [
-            {k: v for k, v in {"src": f"./{i['name']}", "caption": caption(i, "nl") or None,
+            {k: v for k, v in {"src": i["name"], "caption": caption(i, "nl") or None,
                                "captionEn": caption(i, "en") if caption(i, "en") != caption(i, "nl") else None,
                                "alt": strip_tags(i["meta"]["nl"].get("alt", "")) or None}.items() if v}
             for i in gallery_imgs
@@ -335,13 +337,11 @@ def main():
             def num(name, default):
                 v = fields.get(name, "")
                 return int(v) if v.isdigit() else default
-            extra = {"featured": {
-                "forSale": {"items": refs("featuredforsale"), "max": num("maxsales", 4)},
-                "turntables": {"items": refs("featuredturntables"), "max": num("maxturntables", 3)},
-                "speakers": {"items": refs("featuredspeakers"), "max": num("maxspeakers", 3)},
-                "connections": {"items": refs("featuredconnections"), "max": num("maxconnections", 4)},
-                "interiors": {"items": refs("featuredinteriors"), "max": num("maximteriors", 3)},
-            }}
+            # De lijsten op de Kirby-homepage worden vinkjes op de items zelf (makkelijker in een CMS):
+            # featuredforsale → forSale: true, de andere lijsten → uitgelicht: true.
+            UITGELICHT.update(refs("featuredturntables") + refs("featuredspeakers") + refs("featuredconnections") + refs("featuredinteriors"))
+            TE_KOOP.update(refs("featuredforsale"))
+            extra = {}
         elif template == "contact":
             extra = {k: nl.get(k) or None for k in ("street", "zip", "location", "phone", "email")}
             extra["order"] = order
@@ -355,15 +355,13 @@ def main():
             if convert(child, OUT / "items" / section / cslug, "item"):
                 stats["items"] += 1
 
-    # Items in "Te koop" op de homepage krijgen forSale: true (knop "Bel ons voor de prijs")
-    home = OUT / "sections" / "home" / "index.md"
-    if home.exists():
-        fm = yaml.safe_load(home.read_text(encoding="utf-8").split("---")[1])
-        for ref in (fm.get("featured", {}).get("forSale", {}).get("items") or []):
+    # Vinkjes zetten: "Te koop" (knop "Bel ons voor de prijs") en "Uitgelicht op de homepage"
+    for refs_, veld in ((TE_KOOP, "forSale"), (UITGELICHT, "uitgelicht")):
+        for ref in refs_:
             f = OUT / "items" / ref / "index.md"
             if f.exists():
                 txt = f.read_text(encoding="utf-8")
-                f.write_text(txt.replace("\nlisted:", "\nforSale: true\nlisted:", 1), encoding="utf-8")
+                f.write_text(txt.replace("\nlisted:", f"\n{veld}: true\nlisted:", 1), encoding="utf-8")
 
     # Algemene site-gegevens
     site_nl = parse_kirby(SRC / "site.nl.txt") or parse_kirby(SRC / "site.txt")

@@ -6,12 +6,12 @@ tags:
 - yello
 - speakers
 subtitle: Connecties
-cover: ./adsc_5022.jpg
+cover: adsc_5022.jpg
 images:
-- src: ./dsc_4971.jpg
-- src: ./dsc_4999.jpg
-- src: ./dsc_5012.jpg
-- src: ./dsc_5246.jpg
+- src: dsc_4971.jpg
+- src: dsc_4999.jpg
+- src: dsc_5012.jpg
+- src: dsc_5246.jpg
 ---
 
 ## Mijn connecties met Yello
@@ -36,4 +36,4 @@ To complete my day I even met Dieter and his comment about speakers was equally 
 
 So I give many thanks to the two amazing guys who are Yello.
 
-![](./adsc_5022.jpg)
+![](adsc_5022.jpg)

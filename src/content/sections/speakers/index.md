@@ -6,9 +6,9 @@ tags:
 - luidsprekers
 subtitle: Wat een geweldige speakers
 metaTitle: Studio 4 Holland - Custom build speakers
-cover: ./lrcrs.jpg
+cover: lrcrs.jpg
 images:
-- src: ./lrcrs.jpg
+- src: lrcrs.jpg
 ---
 
 ## Op maat gemaakt

@@ -9,15 +9,15 @@ tags:
 - speaker
 - setup
 - sale
-cover: ./pack-shot.jpg
+cover: pack-shot.jpg
 images:
-- src: ./front-and-rear.jpg
+- src: front-and-rear.jpg
   caption: Front and Rear speakers
-- src: ./front-detail.jpg
+- src: front-detail.jpg
   caption: Closeup Front Speaker
-- src: ./lrcrs.jpg
+- src: lrcrs.jpg
   caption: 5.1 speakersystem
-- src: ./pack-shot.jpg
+- src: pack-shot.jpg
   caption: 5.1 system pack shot
 ---
 

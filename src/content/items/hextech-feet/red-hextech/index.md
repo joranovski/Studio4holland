@@ -5,7 +5,7 @@ listed: true
 tags:
 - red
 - hextech
-cover: ./20170917_094012.jpg
+cover: 20170917_094012.jpg
 images:
-- src: ./20170917_094012.jpg
+- src: 20170917_094012.jpg
 ---

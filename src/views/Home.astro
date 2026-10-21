@@ -7,22 +7,18 @@ import ContactKnoppen from "../components/ContactKnoppen.astro";
 import Foto from "../components/Foto.astro";
 import { Image } from "astro:assets";
 import speakerLijn from "../assets/speaker-lijn.png";
-import { getSection, getItemsById, renderBody } from "../lib/content";
-import { SECTION_ICON, site } from "../data/site";
+import { getSection, getUitgelicht, getTeKoop, renderBody } from "../lib/content";
+import { HOME_RIJEN, HOME_TE_KOOP_MAX, SECTION_ICON, site } from "../data/site";
 import { t, w, type Lang } from "../i18n";
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const home = (await getSection("home", lang))!;
 const { Content } = await renderBody(home);
-const featured = home.nl.data.featured ?? {};
-const lijst = async (key: string) => {
-  const f = featured[key];
-  return f ? (await getItemsById(f.items, lang)).slice(0, f.max) : [];
-};
-const teKoop = await lijst("forSale");
+// "Te koop" en de rijen komen uit de vinkjes op de items zelf (Te koop / Uitgelicht op de homepage)
+const teKoop = await getTeKoop(lang, HOME_TE_KOOP_MAX);
 const rijen = await Promise.all(
-  ["turntables", "speakers", "connections", "interiors"].map(async (key) => ({ key, sectie: await getSection(key, lang), items: await lijst(key) })),
+  HOME_RIJEN.map(async ({ sectie, max }) => ({ key: sectie, sectie: await getSection(sectie, lang), items: await getUitgelicht(sectie, lang, max) })),
 );
 const schema = {
   "@context": "https://schema.org",

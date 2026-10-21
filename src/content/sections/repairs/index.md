@@ -3,9 +3,9 @@ title: Reparaties
 slug: repairs
 order: 4
 listed: true
-cover: ./sl-repair-look-inside.jpeg
+cover: sl-repair-look-inside.jpeg
 images:
-- src: ./sl-repair-look-inside.jpeg
+- src: sl-repair-look-inside.jpeg
   caption: SL repair look inside
 ---
 

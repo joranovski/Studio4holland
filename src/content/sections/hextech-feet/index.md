@@ -2,13 +2,13 @@
 title: Hextech voetjes
 order: 3
 listed: true
-cover: ./20170917_094344.jpg
+cover: 20170917_094344.jpg
 images:
-- src: ./20170917_093346.jpg
-- src: ./20170917_093733.jpg
-- src: ./20170917_094002.jpg
-- src: ./whatsapp-image-2021-04-28-at-19.53.26.jpeg
-- src: ./20170917_094344.jpg
+- src: 20170917_093346.jpg
+- src: 20170917_093733.jpg
+- src: 20170917_094002.jpg
+- src: whatsapp-image-2021-04-28-at-19.53.26.jpeg
+- src: 20170917_094344.jpg
 ---
 
 ## Introducing Hextech feet

@@ -1,11 +1,12 @@
 ---
 title: Ron ridder
 order: 3
+uitgelicht: true
 listed: true
 subtitle: I have a TV set from Loewe with a sound projector. This sound projector is giving a surround effect using only one speaker. The TV set supports digital radio.
-cover: ./dsc_3703.jpg
+cover: dsc_3703.jpg
 images:
-- src: ./dsc_3703.jpg
+- src: dsc_3703.jpg
 ---
 
 I have a TV set from Loewe with a sound projector. This sound projector is giving a surround effect using only one speaker. The TV set supports digital radio.

@@ -30,6 +30,7 @@ export interface Page {
   order: number;
   listed: boolean;
   forSale: boolean;
+  uitgelicht: boolean;
   metaTitle?: string;
   metaDescription?: string;
   cover?: ImageMetadata;
@@ -85,6 +86,7 @@ function build(kind: Page["kind"], nl: Nl, en: En | undefined, lang: Lang): Page
     order: d.order ?? 999,
     listed: d.listed,
     forSale: !!d.forSale || (d.tags ?? []).some((t) => /^(sale|te koop)$/i.test(t)),
+    uitgelicht: !!d.uitgelicht,
     metaTitle: (useEn && en!.data.metaTitle) || (lang === "nl" ? d.metaTitle : undefined),
     metaDescription: (useEn && en!.data.metaDescription) || (lang === "nl" ? d.metaDescription : undefined),
     cover: d.cover,
@@ -134,13 +136,15 @@ export async function getItems(section: string, lang: Lang, { all = false } = {}
     .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 }
 
-/** Items op id ("turntables/drum-deck"), in de opgegeven volgorde */
-export async function getItemsById(ids: string[], lang: Lang) {
-  const c = await load();
-  return ids
-    .map((id) => c.items.find((e) => e.id === id))
-    .filter((e): e is CollectionEntry<"items"> => !!e)
-    .map((e) => build("item", e, c.iEn.get(e.id), lang));
+/** Uitgelichte items van een sectie voor de homepage (vinkje "Uitgelicht op de homepage") */
+export async function getUitgelicht(section: string, lang: Lang, max: number) {
+  return (await getItems(section, lang)).filter((i) => i.uitgelicht).slice(0, max);
+}
+
+/** Alles met het vinkje "Te koop", uit alle secties */
+export async function getTeKoop(lang: Lang, max = 99) {
+  const lijsten = await Promise.all(SECTIONS.map((s) => getItems(s, lang)));
+  return lijsten.flat().filter((i) => i.forSale && i.cover).slice(0, max);
 }
 
 export async function renderBody(p: Page) {

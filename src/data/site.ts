@@ -26,6 +26,15 @@ export const site = {
 export const SECTIONS = ["speakers", "turntables", "hextech-feet", "repairs", "connections", "interiors"] as const;
 export type SectionKey = (typeof SECTIONS)[number];
 
+/** Rijen op de homepage: welke secties, en hoeveel uitgelichte items per rij */
+export const HOME_RIJEN: { sectie: SectionKey; max: number }[] = [
+  { sectie: "turntables", max: 3 },
+  { sectie: "speakers", max: 3 },
+  { sectie: "connections", max: 4 },
+  { sectie: "interiors", max: 3 },
+];
+export const HOME_TE_KOOP_MAX = 4;
+
 export const SECTION_ICON: Record<string, string> = {
   speakers: "speaker",
   turntables: "vinyl",

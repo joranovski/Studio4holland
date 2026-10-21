@@ -135,4 +135,10 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
 
+# Het beheer (Sveltia CMS) niet in zoekmachines
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
 # https, kaal → www, de 404-pagina en compressie regelt Netlify zelf.

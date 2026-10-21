@@ -28,14 +28,12 @@ const nlSchema = ({ image }: { image: () => z.ZodTypeAny }) =>
     subtitle: z.string().optional(),
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
-    /** te koop: toont "Bel ons voor de prijs" */
+    /** te koop: toont "Bel ons voor de prijs" en staat in "Te koop" op de homepage */
     forSale: z.boolean().optional(),
+    /** uitgelicht in de rij van deze sectie op de homepage */
+    uitgelicht: z.boolean().optional(),
     cover: image().optional(),
     images: z.array(beeld(image)).optional(),
-    // alleen op de homepage
-    featured: z
-      .record(z.string(), z.object({ items: z.array(z.string()), max: z.number().default(4) }))
-      .optional(),
     // alleen op de contactpagina
     street: z.string().optional(),
     zip: z.string().optional(),

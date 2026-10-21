@@ -3,41 +3,12 @@ title: Welkom
 listed: false
 metaTitle: Studio 4 Holland - Welkom voor al jouw technics draaitafel onderhoud en reparatie
 metaDescription: Studio4Holland,  jouw adres voor draaitafel onderhoud, ontwerp, bouw en reparatie
-cover: ./collection-custom-230v-outlets.jpeg
+cover: collection-custom-230v-outlets.jpeg
 images:
-- src: ./collection-custom-230v-outlets.jpeg
-featured:
-  forSale:
-    items:
-    - turntables/custom-sl1200
-    - speakers/speaker-rebuild
-    - speakers/multi-bespoke-speakers
-    max: 3
-  turntables:
-    items:
-    - turntables/sl-1200-mk-one
-    - turntables/wooden-sl
-    - turntables/drum-deck
-    - turntables/drum-turntable
-    max: 3
-  speakers:
-    items:
-    - speakers/bespoke-speakers
-    max: 3
-  connections:
-    items:
-    - connections/edwin
-    - connections/ron-ridder
-    - connections/araldo
-    max: 4
-  interiors:
-    items:
-    - interiors/interior-green-vinyl-recordshop-breda
-    - interiors/video-editing-desk
-    max: 2
+- src: collection-custom-230v-outlets.jpeg
 ---
 
-![](./highend-turntables-on-display.jpeg)
+![](highend-turntables-on-display.jpeg)
 
 ## Why and how did Studio 4 Holland get created.
 

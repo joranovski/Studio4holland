@@ -6,7 +6,7 @@ tags:
 - black
 - hextech
 subtitle: Black Hextech
-cover: ./black-hextech-foot.jpg
+cover: black-hextech-foot.jpg
 images:
-- src: ./black-hextech-foot.jpg
+- src: black-hextech-foot.jpg
 ---

@@ -1,10 +1,11 @@
 ---
 title: Araldo
 order: 1
+uitgelicht: true
 listed: true
-cover: ./dsc_5638.jpg
+cover: dsc_5638.jpg
 images:
-- src: ./dsc_5638.jpg
+- src: dsc_5638.jpg
 ---
 
 Studio4Holland!\

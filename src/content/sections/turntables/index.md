@@ -2,14 +2,14 @@
 title: Draaitafels
 order: 2
 listed: true
-cover: ./turntables-on-display.jpeg
+cover: turntables-on-display.jpeg
 images:
-- src: ./closeup-platter.jpeg
-- src: ./output-socket.jpeg
-- src: ./several-tonearms.jpeg
-- src: ./sl-technics-on-workbench.jpeg
-- src: ./tonearm-closeup.jpeg
-- src: ./turntables-on-display.jpeg
+- src: closeup-platter.jpeg
+- src: output-socket.jpeg
+- src: several-tonearms.jpeg
+- src: sl-technics-on-workbench.jpeg
+- src: tonearm-closeup.jpeg
+- src: turntables-on-display.jpeg
 ---
 
 ### Involvement
