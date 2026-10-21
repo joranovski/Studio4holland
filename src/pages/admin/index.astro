@@ -1,3 +1,7 @@
+---
+// Het beheer (Sveltia CMS) op /admin/. Een gewone pagina in plaats van public/admin/index.html,
+// zodat /admin/ ook in "npm run dev" werkt. De instellingen staan in public/admin/config.yml.
+---
 <!doctype html>
 <html lang="nl">
   <head>
@@ -8,7 +12,6 @@
     <link rel="icon" type="image/png" href="/icon-192.png" />
   </head>
   <body>
-    <!-- Sveltia CMS: bewerkt de Markdown-bestanden in de GitHub-repo. Instellingen: config.yml hiernaast. -->
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+    <script is:inline src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
   </body>
 </html>
