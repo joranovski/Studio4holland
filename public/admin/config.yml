@@ -131,13 +131,13 @@ collections:
     required: false
     hint: Voor de filtertoetsen op de pagina Draaitafels.
     options:
-    - label: Kleur en custom
+    - label: Kleur & custom
       value: kleur
-    - label: Hout en natuur
+    - label: Hout & natuur
       value: hout
     - label: Bijzondere vormen
       value: vorm
-    - label: Techniek en restauratie
+    - label: Techniek & restauratie
       value: techniek
   - name: listed
     label: Zichtbaar in de lijst

@@ -52,10 +52,10 @@ export const NAV_LABEL: Record<SectionKey, [string, string]> = {
 /** Soorten om op te filteren, per sectie. Elk item kiest er één (veld "soort", in het beheer een keuzelijst). */
 export const SOORTEN: Partial<Record<SectionKey, { id: string; naam: [string, string] }[]>> = {
   turntables: [
-    { id: "kleur", naam: ["Kleur en custom", "Colour and custom"] },
-    { id: "hout", naam: ["Hout en natuur", "Wood and nature"] },
+    { id: "kleur", naam: ["Kleur & custom", "Colour & custom"] },
+    { id: "hout", naam: ["Hout & natuur", "Wood & nature"] },
     { id: "vorm", naam: ["Bijzondere vormen", "Unusual shapes"] },
-    { id: "techniek", naam: ["Techniek en restauratie", "Engineering and restoration"] },
+    { id: "techniek", naam: ["Techniek & restauratie", "Tech & restoration"] },
   ],
 };
 /** Filtertoetsen alleen bij secties met minstens zoveel items */

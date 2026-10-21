@@ -247,23 +247,26 @@ h1.tab{font-size:var(--fs-xl);padding:12px 20px 10px}
 .kaart-meer .icon{transition:translate var(--snel)}
 
 /* ---------- sectiepagina ---------- */
-.filterbalk{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--r-4);padding:var(--r-4);border-radius:var(--rond-m);background:var(--grafiet-850);border:1px solid var(--lijn)}
-.filterbalk[hidden]{display:none}
-.filter-toetsen{display:flex;flex-wrap:wrap;gap:8px}
-.filter-toetsen .toets{min-height:44px}
+.filterbalk{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--r-3) var(--r-5);padding:12px 14px 12px 12px;border-radius:var(--rond-m);background:var(--grafiet-850);border:1px solid var(--lijn)}
+/* de toetsen blijven op één rij; past het niet, dan schuif je opzij (met een vervaging aan de rand) */
+.filter-toetsen{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;scrollbar-width:none;margin:-6px;padding:6px 6px 9px;scroll-snap-type:x proximity;
+  mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent)}
+.filter-toetsen::-webkit-scrollbar{display:none}
+.filter-toetsen .toets{flex:none;scroll-snap-align:start}
+.filter-toetsen .toets{min-height:42px;padding:8px 11px;font-size:.74rem;letter-spacing:.05em}
 .filter-toetsen .tel{color:var(--grafiet-400);letter-spacing:0;font-weight:500}
 .filter-toetsen .toets[aria-pressed="true"]{background:var(--toets-bg-in);color:var(--wit);transform:translateY(2px);box-shadow:var(--toets-schaduw-in)}
 .filter-toetsen .toets[aria-pressed="true"] .led:not(.led-groen){background:var(--led-aan);box-shadow:0 0 8px var(--led-gloed)}
 .filter-toetsen .toets[aria-pressed="true"] .tel{color:var(--oranje-300)}
 .filter-toetsen .led-groen{background:var(--led-uit);box-shadow:inset 0 1px 1px rgba(0,0,0,.6)}
 .filter-toetsen .toets[aria-pressed="true"] .led-groen{background:var(--groen-500);box-shadow:0 0 8px rgba(35,179,22,.8)}
-.filter-teller{display:flex;align-items:center;gap:12px}
-.filter-teller-label{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tekst-gedempt)}
-.filter-teller .teller{font-size:1.15rem}
+/* de teller rechts, label boven het getal (zoals op een tapedeck), met een scheidingslijn */
+.filter-teller{display:grid;justify-items:center;gap:6px;padding-left:var(--r-5);border-left:1px solid var(--lijn-sterk);align-self:stretch;align-content:center}
+.filter-teller-label{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tekst-gedempt)}
+.filter-teller .teller{font-size:1.1rem}
 .kaarten > li[hidden]{display:none}
 @media (max-width:640px){
-  .filter-toetsen{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:-4px;padding:4px 4px 8px;scroll-snap-type:x proximity}
-  .filter-toetsen .toets{scroll-snap-align:start}
+  .filterbalk{grid-template-columns:minmax(0,1fr)}
   .filter-teller{display:none}
 }
 ::view-transition-group(*){animation-duration:.3s;animation-timing-function:cubic-bezier(.3,.7,.2,1)}
