@@ -9,4 +9,5 @@ images:
 - src: dsc_9279.jpg
 - src: dsc_9280.jpg
 - src: dsc_9283.jpg
+soort: kleur
 ---

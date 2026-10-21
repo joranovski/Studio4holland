@@ -13,6 +13,7 @@ images:
 - src: woody-5.jpg
 - src: woody-6.jpg
 - src: woody-7.jpg
+soort: hout
 ---
 
 Compleet houten SL met kurk

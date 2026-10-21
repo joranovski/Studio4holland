@@ -16,6 +16,7 @@ images:
 - src: drum-6.jpg
 - src: drum-7.jpg
 - src: drum-8.jpg
+soort: vorm
 ---
 
 ## Drum & bass!

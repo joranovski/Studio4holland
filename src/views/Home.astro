@@ -3,23 +3,62 @@ import Base from "../layouts/Base.astro";
 import Deck from "../components/Deck.astro";
 import Kaart from "../components/Kaart.astro";
 import Icon from "../components/Icon.astro";
-import ContactKnoppen from "../components/ContactKnoppen.astro";
 import Foto from "../components/Foto.astro";
 import { Image } from "astro:assets";
 import speakerLijn from "../assets/speaker-lijn.png";
-import { getSection, getUitgelicht, getTeKoop, renderBody } from "../lib/content";
-import { HOME_RIJEN, HOME_TE_KOOP_MAX, SECTION_ICON, site } from "../data/site";
-import { t, w, type Lang } from "../i18n";
+import { getSection, getUitgelicht, getTeKoop, getItems, renderBody } from "../lib/content";
+import { HOME_RIJEN, INGANG_FOTO, SECTION_ICON, site } from "../data/site";
+import { t, w, teKoopPath, contactPath, type Lang } from "../i18n";
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const home = (await getSection("home", lang))!;
 const { Content } = await renderBody(home);
-// "Te koop" en de rijen komen uit de vinkjes op de items zelf (Te koop / Uitgelicht op de homepage)
-const teKoop = await getTeKoop(lang, HOME_TE_KOOP_MAX);
+const teKoop = await getTeKoop(lang);
 const rijen = await Promise.all(
   HOME_RIJEN.map(async ({ sectie, max }) => ({ key: sectie, sectie: await getSection(sectie, lang), items: await getUitgelicht(sectie, lang, max) })),
 );
+
+// Foto voor een ingang: de hoofdfoto van een sectie ("repairs") of van een item ("turntables/color-collection")
+async function fotoVan(pad: string) {
+  const [sectie, item] = pad.split("/");
+  const p = item ? (await getItems(sectie, lang, { all: true })).find((i) => i.id === pad) : await getSection(sectie, lang);
+  return p?.cover ?? p?.photos[0]?.src;
+}
+const turntables = await getSection("turntables", lang);
+const ingangen = [
+  {
+    nr: "01", label: t(lang, "Repareren", "Repair"), led: "aan",
+    titel: t(lang, "Reparatie of onderhoud", "Repair or service"),
+    tekst: t(lang, "Draait je Technics niet meer zoals hij moet? Van pitch tot toonarm: we krijgen hem weer aan de praat.", "Is your Technics not running the way it should? From pitch to tonearm, we'll get it going again."),
+    actie: t(lang, "Reparatie aanvragen", "Request a repair"),
+    url: `${contactPath(lang)}?soort=reparatie`,
+    foto: await fotoVan(INGANG_FOTO.reparatie),
+    alt: t(lang, "Een geopende Technics op de werkbank", "An opened-up Technics on the workbench"),
+  },
+  {
+    nr: "02", label: t(lang, "Op maat", "Bespoke"), led: "",
+    titel: t(lang, "Iets op maat laten maken", "Have something made to order"),
+    tekst: t(lang, "Een custom SL in jouw kleur, speakers die in je ruimte passen of Hextech-voetjes.", "A custom SL in your colour, speakers that fit your room, or Hextech feet."),
+    actie: t(lang, "Bekijk het werk", "See the work"),
+    url: turntables?.url ?? `/${lang}`,
+    foto: await fotoVan(INGANG_FOTO.maat),
+    alt: t(lang, "Technics-draaitafels in allerlei kleuren", "Technics turntables in all sorts of colours"),
+  },
+  ...(teKoop.length
+    ? [{
+        nr: "03", label: t(lang, "Kopen", "Buy"), led: "groen",
+        titel: w(lang, "forSale"),
+        tekst: t(lang, "Gereviseerde decks, speakers en hifi. Alles op één plek; bel voor de prijs.", "Refurbished decks, speakers and hi-fi. All in one place; call for the price."),
+        actie: t(lang, `${teKoop.length} ${teKoop.length === 1 ? "item" : "items"} te koop`, `${teKoop.length} ${teKoop.length === 1 ? "item" : "items"} for sale`),
+        url: teKoopPath(lang),
+        foto: teKoop.map((i) => i.cover ?? i.photos[0]?.src).find(Boolean),
+        alt: teKoop[0].title,
+        sticker: true,
+      }]
+    : []),
+];
+
 const schema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -36,19 +75,28 @@ const schema = {
 ---
 <Base lang={lang} title={home.metaTitle ?? home.title} description={home.metaDescription ?? site.description[lang]} alt={home.alt} current="home" schema={schema}>
   <section class="held">
-    <div class="wrap held-raster">
-      <div class="held-tekst">
-        <p class="mono" style="color:var(--oranje-300);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px">
-          Studio 4 Holland · Nijkerk · {t(lang, "sinds", "since")} {site.since}
-        </p>
-        <h1>{t(lang, "Technics-reparatie, custom draaitafels en ", "Technics repair, custom turntables and ")}<em>{t(lang, "speakers op maat", "bespoke speakers")}</em></h1>
-        <p class="intro">{home.metaDescription ?? site.description[lang]}</p>
-        <ContactKnoppen lang={lang} />
-      </div>
-      <div class="held-deck">
-        <Deck lang={lang} />
-        <p class="deck-uitleg">{t(lang, "Druk op Start/Stop, kies 33 of 45 en speel met de pitch.", "Press Start/Stop, pick 33 or 45 and play with the pitch.")}</p>
-      </div>
+    <div class="wrap">
+      <p class="held-boven mono">Studio 4 Holland · Nijkerk · {t(lang, "sinds", "since")} {site.since}</p>
+      <h1 class="held-kop">{t(lang, "Waarmee kunnen we je helpen?", "How can we help you?")}</h1>
+      <p class="held-intro">{home.metaDescription ?? site.description[lang]}</p>
+      <ul class="ingangen">
+        {ingangen.map((g, n) => (
+          <li>
+            <a class="ingang" href={g.url}>
+              <div class="ingang-beeld">
+                {g.foto && <Foto src={g.foto} alt={g.alt} widths={[480, 900]} sizes="(min-width: 1240px) 400px, (min-width: 760px) 33vw, 100vw" loading="eager" fetchpriority={n === 0 ? "high" : undefined} />}
+                {g.sticker && <span class="sticker">{w(lang, "forSale")}</span>}
+              </div>
+              <div class="ingang-tekst">
+                <span class="ingang-label mono"><i class:list={["led", { "led-aan": g.led === "aan", "led-groen": g.led === "groen" }]} aria-hidden="true"></i>{g.nr} · {g.label}</span>
+                <h2>{g.titel}</h2>
+                <p>{g.tekst}</p>
+                <span class="ingang-actie">{g.actie} <Icon name="arrow" size={16} /></span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
@@ -57,24 +105,10 @@ const schema = {
       <h2 class="tab"><Icon name="home" size={20} />{home.title}</h2>
       <div class="paneel welkom-raster">
         <div class="proza"><Content /></div>
-        {teKoop.length > 0 && (
-          <aside class="te-koop" aria-labelledby="te-koop-kop">
-            <div class="te-koop-kop">
-              <h2 id="te-koop-kop"><i class="led" aria-hidden="true"></i>{w(lang, "forSale")}</h2>
-              <a class="knop knop-groen" href={site.phoneHref} style="min-height:38px;padding:7px 12px;font-size:.85rem"><Icon name="phone" size={16} />{w(lang, "callForPrice")}</a>
-            </div>
-            <ul class="te-koop-lijst">
-              {teKoop.map((i) => (
-                <li class="te-koop-item">
-                  <a href={i.url}>
-                    {(i.cover ?? i.photos[0]?.src) && <Foto src={(i.cover ?? i.photos[0].src)!} alt="" sizes="96px" widths={[192]} />}
-                    <span><b>{i.title}</b>{i.excerpt && <small>{i.excerpt.slice(0, 70)}{i.excerpt.length > 70 ? " …" : ""}</small>}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </aside>
-        )}
+        <div class="welkom-deck">
+          <Deck lang={lang} />
+          <p class="deck-uitleg">{t(lang, "Druk op Start/Stop, kies 33 of 45 en speel met de pitch.", "Press Start/Stop, pick 33 or 45 and play with the pitch.")}</p>
+        </div>
       </div>
     </div>
   </section>

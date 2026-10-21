@@ -10,6 +10,7 @@ import { getImage } from "astro:assets";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import TerugKnop from "../components/TerugKnop.astro";
+import MobielBediening from "../components/MobielBediening.astro";
 import { site } from "../data/site";
 import { t, w, type Lang } from "../i18n";
 import deelbeeld from "../assets/deelbeeld.jpg";
@@ -76,5 +77,6 @@ const abs = (p: string) => new URL(p, Astro.site).href;
     </main>
     <Footer lang={lang} />
     <TerugKnop lang={lang} />
+    <MobielBediening lang={lang} alt={alt} current={current} />
   </body>
 </html>

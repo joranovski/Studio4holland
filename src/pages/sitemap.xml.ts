@@ -10,6 +10,7 @@ export const GET: APIRoute = async ({ site }) => {
     const s = await getSection(id, "nl");
     if (s) paren.push(id === "contact" ? { nl: "/nl/contact", en: "/en/contact" } : s.alt);
   }
+  paren.push({ nl: "/nl/te-koop", en: "/en/for-sale" });
   for (const s of await getNav("nl")) paren.push(s.alt);
   for (const sec of SECTIONS) for (const i of await getItems(sec, "nl")) paren.push(i.alt);
   const url = (u: string) => new URL(u, site).href;

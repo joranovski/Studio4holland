@@ -14,6 +14,7 @@ images:
 - src: dsc_9033.jpg
 - src: dsc_9036.jpg
 - src: dsc_9040.jpg
+soort: techniek
 ---
 
 We have developed various methods and design's to fit almost any high end arm to a Technics deck. Other decks are also considered of course.

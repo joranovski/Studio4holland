@@ -9,6 +9,7 @@ images:
 - src: dscn0746.jpg
 - src: dscn0767.jpg
 - src: dscn0778.jpg
+soort: kleur
 ---
 
 New York SL

@@ -9,6 +9,7 @@ cover: dsc_9291.jpg
 images:
 - src: dsc_9291.jpg
 - src: dsc_9292.jpg
+soort: techniek
 ---
 
 SL1700

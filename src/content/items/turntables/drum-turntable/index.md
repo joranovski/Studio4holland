@@ -15,6 +15,7 @@ images:
 - src: 2016-03-15-14.42.37.jpg
 - src: drum-mk2-2.jpg
 - src: drum-mk2-3.jpg
+soort: vorm
 ---
 
 Bedacht, ontworpen en gebouwd door Studio 4 Holland

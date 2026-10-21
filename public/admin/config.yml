@@ -119,12 +119,26 @@ collections:
     widget: boolean
     default: false
     required: false
-    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item op de pagina Te koop en in de teller in het menu.
   - name: uitgelicht
     label: Uitgelicht op de homepage
     widget: boolean
     default: false
     required: false
+  - name: soort
+    label: Soort
+    widget: select
+    required: false
+    hint: Voor de filtertoetsen op de pagina Draaitafels.
+    options:
+    - label: Kleur en custom
+      value: kleur
+    - label: Hout en natuur
+      value: hout
+    - label: Bijzondere vormen
+      value: vorm
+    - label: Techniek en restauratie
+      value: techniek
   - name: listed
     label: Zichtbaar in de lijst
     widget: boolean
@@ -236,7 +250,7 @@ collections:
     widget: boolean
     default: false
     required: false
-    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item op de pagina Te koop en in de teller in het menu.
   - name: uitgelicht
     label: Uitgelicht op de homepage
     widget: boolean
@@ -353,7 +367,7 @@ collections:
     widget: boolean
     default: false
     required: false
-    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item op de pagina Te koop en in de teller in het menu.
   - name: uitgelicht
     label: Uitgelicht op de homepage
     widget: boolean
@@ -470,7 +484,7 @@ collections:
     widget: boolean
     default: false
     required: false
-    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item op de pagina Te koop en in de teller in het menu.
   - name: uitgelicht
     label: Uitgelicht op de homepage
     widget: boolean
@@ -587,7 +601,7 @@ collections:
     widget: boolean
     default: false
     required: false
-    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item op de pagina Te koop en in de teller in het menu.
   - name: uitgelicht
     label: Uitgelicht op de homepage
     widget: boolean
@@ -704,7 +718,7 @@ collections:
     widget: boolean
     default: false
     required: false
-    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item in "Te koop" op de homepage.
+    hint: Toont de groene knop "Bel ons voor de prijs" en zet het item op de pagina Te koop en in de teller in het menu.
   - name: uitgelicht
     label: Uitgelicht op de homepage
     widget: boolean

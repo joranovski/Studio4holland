@@ -6,4 +6,5 @@ cover: 230v-outlet.jpeg
 images:
 - src: 230v-outlet.jpeg
 - src: 20181004_130309.jpg
+soort: techniek
 ---

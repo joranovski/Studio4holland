@@ -22,6 +22,7 @@ images:
 - src: dsc_5262.jpg
 - src: dsc_9091.jpg
 - src: dsc_9237.jpg
+soort: kleur
 ---
 
 Kleuren collectie

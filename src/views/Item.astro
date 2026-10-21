@@ -3,20 +3,28 @@
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import Galerij from "../components/Galerij.astro";
-import ContactKnoppen from "../components/ContactKnoppen.astro";
 import { Image } from "astro:assets";
 import arm from "../assets/technics-arm.png";
 import draaitafelLijn from "../assets/turntable-lijn.png";
 import { renderBody, type Page } from "../lib/content";
 import { SECTION_ICON, site } from "../data/site";
-import { w, t } from "../i18n";
+import { w, t, contactPath } from "../i18n";
 
-interface Props { page: Page; sectionPage: Page; prev?: Page; next?: Page }
-const { page, sectionPage, prev, next } = Astro.props;
+interface Props { page: Page; sectionPage: Page; prev?: Page; next?: Page; pos?: number; totaal?: number }
+const { page, sectionPage, prev, next, pos, totaal } = Astro.props;
 const lang = page.lang;
 const { Content } = await renderBody(page);
 const technics = ["turntables", "repairs"].includes(page.section);
 const tags = page.tags.filter((tg) => !/^(sale)$/i.test(tg));
+// Aanvraag vanaf dit item: soort en titel gaan mee naar het formulier
+const soort = page.forSale ? "kopen" : page.section === "repairs" ? "reparatie" : "maat";
+const aanvraagTekst = page.forSale
+  ? t(lang, "Vraag naar dit item", "Ask about this item")
+  : page.section === "repairs"
+    ? t(lang, "Zo'n reparatie aanvragen", "Request a repair like this")
+    : t(lang, "Ik wil er ook zo één", "I'd like one too");
+const aanvraagUrl = `${contactPath(lang)}?${new URLSearchParams({ soort, over: page.title, pagina: page.url })}`;
+const twee = (n: number) => String(n).padStart(2, "0");
 const schema = {
   "@context": "https://schema.org",
   "@type": page.forSale ? "Product" : "CreativeWork",
@@ -50,7 +58,10 @@ const schema = {
             )}
             {page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}
             <div class="proza"><Content /></div>
-            <ContactKnoppen lang={lang} prijs={page.forSale} klein />
+            <div class="contact-knoppen klein">
+              <a class="knop" href={aanvraagUrl}><Icon name="mail" size={18} /><span>{aanvraagTekst}</span></a>
+              <a class={page.forSale ? "knop knop-groen" : "toets toets-gewoon"} href={site.phoneHref}><Icon name="phone" size={18} /><span>{w(lang, page.forSale ? "callForPrice" : "call")}</span></a>
+            </div>
             {technics && (
               <div class="item-arm" aria-hidden="true">
                 <Image src={arm} alt="" width={96} densities={[1, 2]} />
@@ -64,12 +75,47 @@ const schema = {
         </div>
 
         {(prev || next) && (
-          <nav class="bladeren" aria-label={t(lang, "Bladeren", "Browse")}>
-            {prev ? <a class="toets" href={prev.url} rel="prev"><Icon name="prev" size={16} /><span><small>{w(lang, "previous")}</small>{prev.title}</span></a> : <span></span>}
-            {next ? <a class="toets" href={next.url} rel="next" style="text-align:right"><span><small>{w(lang, "next")}</small>{next.title}</span><Icon name="next" size={16} /></a> : <span></span>}
+          <nav class="bladeren" aria-label={t(lang, `Bladeren door ${sectionPage.title}`, `Browse ${sectionPage.title}`)} data-veeg>
+            {prev ? <a class="toets bladeren-vorige" href={prev.url} rel="prev"><Icon name="prev" size={16} /><span><small>{w(lang, "previous")}</small><b>{prev.title}</b></span></a> : <span class="bladeren-leeg"></span>}
+            {pos && totaal && (
+              <span class="bladeren-midden">
+                <span class="teller mono"><span class="visually-hidden">{t(lang, "Item", "Item")} </span>{twee(pos)} / {twee(totaal)}</span>
+                <span class="bladeren-hint">{t(lang, "veeg of druk voor het volgende werk", "swipe or tap for the next piece")}</span>
+              </span>
+            )}
+            {next ? <a class="toets bladeren-volgende" href={next.url} rel="next"><span><small>{w(lang, "next")}</small><b>{next.title}</b></span><Icon name="next" size={16} /></a> : <span class="bladeren-leeg"></span>}
           </nav>
         )}
       </div>
     </div>
   </article>
 </Base>
+
+<script>
+  // Op de telefoon: veeg naar links of rechts over de pagina om naar het volgende of vorige werk te gaan.
+  // Niet over de foto's en niet als je verticaal scrolt.
+  const nav = document.querySelector<HTMLElement>("[data-veeg]");
+  if (nav && matchMedia("(pointer: coarse)").matches) {
+    const vorige = nav.querySelector<HTMLAnchorElement>("a[rel=prev]");
+    const volgende = nav.querySelector<HTMLAnchorElement>("a[rel=next]");
+    let x = 0, y = 0, actief = false;
+    const main = document.getElementById("inhoud")!;
+    main.addEventListener("touchstart", (e) => {
+      const doel = e.target as HTMLElement;
+      actief = e.touches.length === 1 && !doel.closest(".galerij, input, textarea, .deck, dialog");
+      x = e.touches[0].clientX;
+      y = e.touches[0].clientY;
+    }, { passive: true });
+    main.addEventListener("touchend", (e) => {
+      if (!actief) return;
+      const dx = e.changedTouches[0].clientX - x;
+      const dy = e.changedTouches[0].clientY - y;
+      if (Math.abs(dx) < 80 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
+      const link = dx < 0 ? volgende : vorige;
+      if (link) {
+        link.classList.add("druk");
+        location.href = link.href;
+      }
+    }, { passive: true });
+  }
+</script>

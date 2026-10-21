@@ -1,5 +1,8 @@
 ---
-// Contact: de tekst uit de content, adres en het formulier (Netlify Forms; vervangt de Uniform-plugin van Kirby).
+// Aanvraag in drie stappen (waarover, details, contact) op het oude contactadres.
+// Eén gewoon formulier voor Netlify Forms: zonder JavaScript staan alle stappen onder elkaar en werkt het ook.
+// Met JavaScript: één stap tegelijk, controle per stap, invullen vanuit een item (?soort=…&over=…&pagina=…)
+// en foto's die vóór het versturen worden verkleind (Netlify neemt max. 8 MB per aanvraag aan).
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import { getSection, renderBody } from "../lib/content";
@@ -10,35 +13,298 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const page = (await getSection("contact", lang))!;
 const { Content } = await renderBody(page);
+
+const soorten = [
+  { id: "reparatie", naam: t(lang, "Reparatie of onderhoud", "Repair or service"), uitleg: t(lang, "Iets werkt niet, of je deck is toe aan een beurt.", "Something isn't working, or your deck needs a service.") },
+  { id: "maat", naam: t(lang, "Iets op maat", "Something bespoke"), uitleg: t(lang, "Een custom SL, speakers of Hextech-voetjes.", "A custom SL, speakers or Hextech feet.") },
+  { id: "kopen", naam: t(lang, "Iets kopen", "Buy something"), uitleg: t(lang, "Een deck, speakers of hifi uit Te koop.", "A deck, speakers or hi-fi from For sale.") },
+  { id: "vraag", naam: t(lang, "Een vraag", "A question"), uitleg: t(lang, "Advies, of gewoon even overleggen.", "Advice, or just talk it through.") },
+];
+const modellen = ["SL-1200 MK2", "SL-1200 MK3", "SL-1200 MK3D", "SL-1200 MK5", "SL-1200 M3D", "SL-1200 MK7", "SL-1210", t(lang, "Ander model of merk", "Other model or brand")];
+const klachten = [
+  t(lang, "Draait niet", "Doesn't spin"),
+  t(lang, "Pitch loopt weg", "Pitch drifts"),
+  t(lang, "Geen of slecht geluid", "No sound or bad sound"),
+  t(lang, "Toonarm", "Tonearm"),
+  t(lang, "Lampje of strobe", "Light or strobe"),
+  t(lang, "Iets anders", "Something else"),
+];
+const stappen = [t(lang, "Waarover", "Topic"), t(lang, "Details", "Details"), t(lang, "Contact", "Contact")];
 ---
 <Base lang={lang} title={page.metaTitle ?? page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current="contact">
   <section class="sectie">
     <div class="wrap">
-      <h1 class="tab"><Icon name="card" size={26} />{page.title}</h1>
-      <div class="paneel contact-raster">
-        <div>
-          <div class="proza"><Content /></div>
-          <address class="adres">
-            <a href={`mailto:${site.email}`}><Icon name="mail" size={20} />{site.email}</a>
-            <a href={site.phoneHref}><Icon name="phone" size={20} />{site.phone}</a>
-            <span style="display:inline-flex;gap:10px;align-items:center"><Icon name="home" size={20} class="icon" />{site.street}, {site.zip} {site.city}</span>
-          </address>
+      <h1 class="tab"><Icon name="mail" size={24} />{w(lang, "enquiry")}</h1>
+      <div class="paneel aanvraag-raster">
+        <div class="aanvraag-hoofd">
+          <div class="proza aanvraag-intro"><Content /></div>
+
+          <form class="aanvraag" name="contact" method="POST" action={thanksPath(lang)} enctype="multipart/form-data" data-netlify="true" netlify-honeypot="bot-veld"
+            data-fout-foto={t(lang, "Deze foto kon niet worden verkleind; kies een JPEG of PNG.", "This photo couldn't be resized; choose a JPEG or PNG.")}>
+            <input type="hidden" name="form-name" value="contact" />
+            <input type="hidden" name="taal" value={lang} />
+            <input type="hidden" name="over" value="" />
+            <input type="hidden" name="pagina" value="" />
+            <p class="visually-hidden"><label>{t(lang, "Niet invullen", "Leave empty")} <input name="bot-veld" tabindex="-1" autocomplete="off" /></label></p>
+
+            <ol class="stappen-rij" aria-label={t(lang, "Stappen", "Steps")} hidden>
+              {stappen.map((naam, i) => (
+                <li><button type="button" class="toets" data-ga={i + 1}><i class="led" aria-hidden="true"></i><span class="mono">{i + 1}</span> {naam}</button></li>
+              ))}
+            </ol>
+
+            <p class="over-chip" hidden>
+              <span>{t(lang, "Over:", "About:")}</span>
+              <span class="chip"><a class="over-link" href="#"></a><button type="button" class="over-weg" aria-label={t(lang, "Niet meer over dit item", "Remove this item")}><Icon name="close" size={12} /></button></span>
+            </p>
+
+            <fieldset class="stap" data-stap="1">
+              <legend class="stap-kop">{t(lang, "Waar gaat het over?", "What is it about?")}</legend>
+              <div class="keuzes">
+                {soorten.map((k) => (
+                  <label class="keuze">
+                    <input type="radio" name="soort" value={k.id} required />
+                    <span class="keuze-naam"><i class="led" aria-hidden="true"></i>{k.naam}</span>
+                    <span class="keuze-uitleg">{k.uitleg}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset class="stap" data-stap="2">
+              <legend class="stap-kop">{t(lang, "Vertel er meer over", "Tell us more")}</legend>
+              <div class="stap-velden">
+                <fieldset class="alleen-reparatie">
+                  <legend class="veld-label">{t(lang, "Welke draaitafel?", "Which turntable?")}</legend>
+                  <div class="toets-keuzes">
+                    {modellen.map((m) => <label class="toets toets-keus"><input type="radio" name="model" value={m} /><i class="led" aria-hidden="true"></i>{m}</label>)}
+                  </div>
+                </fieldset>
+                <fieldset class="alleen-reparatie">
+                  <legend class="veld-label">{t(lang, "Wat merk je?", "What do you notice?")}</legend>
+                  <div class="vinkjes">
+                    {klachten.map((k) => <label class="vink"><input type="checkbox" name="klacht[]" value={k} />{k}</label>)}
+                  </div>
+                </fieldset>
+                <label class="veld">
+                  <span class="veld-label">
+                    <span class="label-standaard">{w(lang, "message")}</span>
+                    <span class="label-reparatie">{t(lang, "Vertel wat er gebeurt", "Tell us what happens")}</span>
+                    <span class="label-maat">{t(lang, "Wat zou je willen laten maken?", "What would you like made?")}</span>
+                    <span class="label-kopen">{t(lang, "Waar heb je interesse in?", "What are you interested in?")}</span>
+                  </span>
+                  <textarea name="bericht" rows="5" required></textarea>
+                </label>
+
+                <div class="fotos">
+                  <label class="foto-kies" hidden>
+                    <input type="file" accept="image/*" multiple class="foto-kies-input" />
+                    <Icon name="camera" size={28} />
+                    <span><b>{t(lang, "Foto's toevoegen", "Add photos")}</b> <span class="veld-label-klein">{w(lang, "optional")}, max. 3</span><br />
+                      <small>{t(lang, "Een foto van de draaitafel en van het typeplaatje achterop helpt.", "A photo of the turntable and of the rating plate on the back helps.")}</small></span>
+                  </label>
+                  <ul class="foto-lijst" aria-live="polite"></ul>
+                  <div class="foto-velden">
+                    <span class="veld-label">{t(lang, "Foto's", "Photos")} <em>{w(lang, "optional")}</em></span>
+                    {[1, 2, 3].map((n) => <input type="file" name={`foto${n}`} accept="image/*" aria-label={`${t(lang, "Foto", "Photo")} ${n}`} />)}
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="stap" data-stap="3">
+              <legend class="stap-kop">{t(lang, "Hoe bereiken we je?", "How can we reach you?")}</legend>
+              <div class="stap-velden">
+                <div class="velden-twee">
+                  <label class="veld"><span class="veld-label">{w(lang, "name")}</span><input name="naam" required autocomplete="name" /></label>
+                  <label class="veld"><span class="veld-label">{w(lang, "email")}</span><input name="email" type="email" required autocomplete="email" /></label>
+                  <label class="veld"><span class="veld-label">{w(lang, "phone")} <em>{w(lang, "optional")}</em></span><input name="telefoon" type="tel" autocomplete="tel" /></label>
+                </div>
+                <fieldset>
+                  <legend class="veld-label">{t(lang, "Liefst contact via", "Preferably contact me by")}</legend>
+                  <div class="toets-keuzes">
+                    <label class="toets toets-keus"><input type="radio" name="voorkeur" value="e-mail" checked /><i class="led" aria-hidden="true"></i>{w(lang, "email")}</label>
+                    <label class="toets toets-keus"><input type="radio" name="voorkeur" value="telefoon" /><i class="led" aria-hidden="true"></i>{t(lang, "Bellen", "Phone")}</label>
+                    {site.whatsapp && <label class="toets toets-keus"><input type="radio" name="voorkeur" value="whatsapp" /><i class="led" aria-hidden="true"></i>WhatsApp</label>}
+                  </div>
+                </fieldset>
+              </div>
+            </fieldset>
+
+            <div class="stap-voet">
+              <button type="button" class="toets stap-terug" hidden>{w(lang, "previous")}</button>
+              <span class="stap-teller mono" hidden aria-live="polite"></span>
+              <button type="button" class="knop stap-verder" hidden>{w(lang, "next")} <Icon name="arrow" size={16} /></button>
+              <button type="submit" class="knop stap-verstuur"><Icon name="mail" size={18} />{t(lang, "Verstuur aanvraag", "Send enquiry")}</button>
+            </div>
+          </form>
         </div>
 
-        <form class="formulier" name="contact" method="POST" action={thanksPath(lang)} data-netlify="true" netlify-honeypot="bot-veld">
-          <input type="hidden" name="form-name" value="contact" />
-          <input type="hidden" name="taal" value={lang} />
-          <p class="visually-hidden"><label>{t(lang, "Niet invullen", "Leave empty")} <input name="bot-veld" tabindex="-1" autocomplete="off" /></label></p>
-          <label class="veld"><span class="veld-label">{w(lang, "name")}</span><input name="naam" required autocomplete="name" /></label>
-          <label class="veld"><span class="veld-label">{w(lang, "email")}</span><input name="email" type="email" required autocomplete="email" /></label>
-          <label class="veld"><span class="veld-label">{w(lang, "phone")} <em>{w(lang, "optional")}</em></span><input name="telefoon" type="tel" autocomplete="tel" /></label>
-          <label class="veld"><span class="veld-label">{w(lang, "message")}</span><textarea name="bericht" required></textarea></label>
-          <div class="form-voet">
-            <span class="vu"><i aria-hidden="true"></i>Rec</span>
-            <button class="knop" type="submit"><Icon name="mail" size={18} />{w(lang, "send")}</button>
-          </div>
-        </form>
+        <aside class="direct">
+          <h2>{t(lang, "Liever direct?", "Rather talk directly?")}</h2>
+          <a class="knop" href={site.phoneHref}><Icon name="phone" size={18} />{t(lang, `Bel ${site.owner.split(" ")[0]}`, `Call ${site.owner.split(" ")[0]}`)}</a>
+          {site.whatsapp && <a class="knop knop-groen" href={site.whatsapp}><Icon name="whatsapp" size={18} />WhatsApp</a>}
+          <a class="toets direct-mail" href={`mailto:${site.email}`}><Icon name="mail" size={18} />{site.email}</a>
+          <address class="direct-adres mono">{site.street} · {site.zip} {site.city}</address>
+        </aside>
       </div>
     </div>
   </section>
 </Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("form.aanvraag");
+  if (form) {
+    form.dataset.js = "";
+    const stappen = [...form.querySelectorAll<HTMLFieldSetElement>(".stap")];
+    const rij = form.querySelector<HTMLOListElement>(".stappen-rij")!;
+    const rijKnoppen = [...rij.querySelectorAll<HTMLButtonElement>("[data-ga]")];
+    const terug = form.querySelector<HTMLButtonElement>(".stap-terug")!;
+    const verder = form.querySelector<HTMLButtonElement>(".stap-verder")!;
+    const verstuur = form.querySelector<HTMLButtonElement>(".stap-verstuur")!;
+    const teller = form.querySelector<HTMLSpanElement>(".stap-teller")!;
+    const en = document.documentElement.lang === "en";
+    let huidig = 1;
+    let hoogste = 1;
+
+    rij.hidden = false;
+    terug.hidden = false;
+    verder.hidden = false;
+    teller.hidden = false;
+
+    const geldig = (n: number) => {
+      const velden = [...stappen[n - 1].querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea")].filter((v) => v.type !== "file");
+      const fout = velden.find((v) => !v.checkValidity());
+      if (fout) {
+        fout.reportValidity();
+        return false;
+      }
+      return true;
+    };
+    const toon = (n: number, focus = true) => {
+      huidig = n;
+      hoogste = Math.max(hoogste, n);
+      stappen.forEach((s, i) => s.classList.toggle("actief", i + 1 === n));
+      rijKnoppen.forEach((k, i) => {
+        if (i + 1 === n) k.setAttribute("aria-current", "step");
+        else k.removeAttribute("aria-current");
+        k.classList.toggle("klaar", i + 1 < hoogste && i + 1 !== n);
+      });
+      terug.disabled = n === 1;
+      verder.hidden = n === stappen.length;
+      verstuur.hidden = n !== stappen.length;
+      teller.textContent = en ? `Step ${n} of ${stappen.length}` : `Stap ${n} van ${stappen.length}`;
+      if (focus) stappen[n - 1].querySelector<HTMLElement>("legend")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      if (focus) stappen[n - 1].querySelector<HTMLElement>("input:not([type=hidden]):not([type=file]), textarea")?.focus({ preventScroll: true });
+    };
+    verder.addEventListener("click", () => geldig(huidig) && toon(huidig + 1));
+    terug.addEventListener("click", () => huidig > 1 && toon(huidig - 1));
+    rijKnoppen.forEach((k, i) =>
+      k.addEventListener("click", () => {
+        const doel = i + 1;
+        if (doel <= huidig) return toon(doel);
+        for (let n = huidig; n < doel; n++) if (!geldig(n)) return toon(n);
+        toon(doel);
+      }),
+    );
+    // Een keuze in stap 1 brengt je meteen naar stap 2
+    form.querySelectorAll<HTMLInputElement>('input[name="soort"]').forEach((r) => r.addEventListener("change", () => huidig === 1 && setTimeout(() => toon(2), 180)));
+    // Enter in een gewoon veld: naar de volgende stap in plaats van meteen versturen
+    form.addEventListener("keydown", (e) => {
+      const doel = e.target as HTMLElement;
+      if (e.key === "Enter" && doel instanceof HTMLInputElement && huidig < stappen.length) {
+        e.preventDefault();
+        verder.click();
+      }
+    });
+    form.addEventListener("submit", (e) => {
+      for (let n = 1; n <= stappen.length; n++) if (!geldig(n)) { e.preventDefault(); toon(n); return; }
+    });
+
+    // Invullen vanuit een item: ?soort=reparatie&over=Drum%20draaitafel&pagina=/nl/turntables/drum-deck
+    const q = new URLSearchParams(location.search);
+    const soort = q.get("soort");
+    const radio = soort && form.querySelector<HTMLInputElement>(`input[name="soort"][value="${CSS.escape(soort)}"]`);
+    if (radio) radio.checked = true;
+    const over = q.get("over");
+    const pagina = q.get("pagina");
+    if (over) {
+      const chip = form.querySelector<HTMLParagraphElement>(".over-chip")!;
+      const a = chip.querySelector<HTMLAnchorElement>(".over-link")!;
+      form.querySelector<HTMLInputElement>('input[name="over"]')!.value = over;
+      a.textContent = over;
+      if (pagina && pagina.startsWith("/")) {
+        a.href = pagina;
+        form.querySelector<HTMLInputElement>('input[name="pagina"]')!.value = location.origin + pagina;
+      } else a.removeAttribute("href");
+      chip.hidden = false;
+      chip.querySelector(".over-weg")!.addEventListener("click", () => {
+        chip.hidden = true;
+        form.querySelector<HTMLInputElement>('input[name="over"]')!.value = "";
+        form.querySelector<HTMLInputElement>('input[name="pagina"]')!.value = "";
+      });
+    }
+    toon(radio ? 2 : 1, false);
+
+    // Foto's: kiezen (of slepen) op één plek, verkleinen tot 1600 px JPEG en in de vaste velden foto1..3 zetten
+    const kies = form.querySelector<HTMLLabelElement>(".foto-kies")!;
+    const kiesInput = kies.querySelector<HTMLInputElement>("input")!;
+    const vakken = [...form.querySelectorAll<HTMLInputElement>(".foto-velden input[type=file]")];
+    const lijst = form.querySelector<HTMLUListElement>(".foto-lijst")!;
+    const fotos: File[] = [];
+    if ("DataTransfer" in window) {
+      kies.hidden = false;
+      form.querySelector<HTMLElement>(".foto-velden")!.hidden = true;
+      const verklein = async (f: File): Promise<File> => {
+        if (!f.type.startsWith("image/")) return f;
+        try {
+          const bmp = await createImageBitmap(f);
+          const schaal = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+          const c = document.createElement("canvas");
+          c.width = Math.round(bmp.width * schaal);
+          c.height = Math.round(bmp.height * schaal);
+          c.getContext("2d")!.drawImage(bmp, 0, 0, c.width, c.height);
+          const blob = await new Promise<Blob | null>((r) => c.toBlob(r, "image/jpeg", 0.82));
+          return blob ? new File([blob], f.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : f;
+        } catch {
+          return f;
+        }
+      };
+      const zet = () => {
+        vakken.forEach((v, i) => {
+          const dt = new DataTransfer();
+          if (fotos[i]) dt.items.add(fotos[i]);
+          v.files = dt.files;
+        });
+        lijst.replaceChildren(
+          ...fotos.map((f, i) => {
+            const li = document.createElement("li");
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(f);
+            img.alt = "";
+            const naam = document.createElement("span");
+            naam.textContent = `${f.name} · ${Math.round(f.size / 1024)} kB`;
+            const weg = document.createElement("button");
+            weg.type = "button";
+            weg.className = "foto-weg";
+            weg.setAttribute("aria-label", (en ? "Remove " : "Verwijder ") + f.name);
+            weg.textContent = "×";
+            weg.addEventListener("click", () => { fotos.splice(i, 1); zet(); });
+            li.append(img, naam, weg);
+            return li;
+          }),
+        );
+        kies.classList.toggle("vol", fotos.length >= vakken.length);
+        kiesInput.disabled = fotos.length >= vakken.length;
+      };
+      const voegToe = async (lijstBestanden: FileList | File[]) => {
+        for (const f of [...lijstBestanden].slice(0, vakken.length - fotos.length)) fotos.push(await verklein(f));
+        zet();
+      };
+      kiesInput.addEventListener("change", async () => { await voegToe(kiesInput.files ?? []); kiesInput.value = ""; });
+      kies.addEventListener("dragover", (e) => { e.preventDefault(); kies.classList.add("sleep"); });
+      kies.addEventListener("dragleave", () => kies.classList.remove("sleep"));
+      kies.addEventListener("drop", (e) => { e.preventDefault(); kies.classList.remove("sleep"); if (e.dataTransfer) voegToe(e.dataTransfer.files); });
+    }
+  }
+</script>

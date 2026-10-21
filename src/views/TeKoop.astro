@@ -1,0 +1,40 @@
+---
+// Alles wat te koop is, uit alle secties (vinkje "Te koop" op een item). Prijs: bellen.
+import Base from "../layouts/Base.astro";
+import Kaart from "../components/Kaart.astro";
+import Icon from "../components/Icon.astro";
+import { getTeKoop } from "../lib/content";
+import { site } from "../data/site";
+import { t, w, teKoopPath, contactPath, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const items = await getTeKoop(lang);
+const titel = w(lang, "forSale");
+const intro = t(lang,
+  "Gereviseerde draaitafels, speakers en hifi uit de werkplaats. Alles is nagekeken en klaar voor gebruik. Bel voor de prijs of stuur een aanvraag.",
+  "Refurbished turntables, speakers and hi-fi from the workshop. Everything has been checked and is ready to use. Call for the price or send an enquiry.");
+---
+<Base lang={lang} title={titel} description={intro} alt={{ nl: teKoopPath("nl"), en: teKoopPath("en") }} current="te-koop">
+  <section class="sectie">
+    <div class="wrap">
+      <div class="tab-rij">
+        <h1 class="tab"><i class="led led-groen" aria-hidden="true" style="width:10px;height:10px"></i>{titel}</h1>
+        <div class="contact-knoppen klein">
+          <a class="knop knop-groen" href={site.phoneHref}><Icon name="phone" size={18} /><span>{w(lang, "callForPrice")}</span></a>
+          <a class="knop" href={`${contactPath(lang)}?soort=kopen`}><Icon name="mail" size={18} /><span>{w(lang, "enquiry")}</span></a>
+        </div>
+      </div>
+      <div class="paneel">
+        <p class="intro">{intro}</p>
+        {items.length > 0 ? (
+          <ul class="kaarten" style="margin-top:var(--r-6)">
+            {items.map((i, n) => <li><Kaart item={i} eager={n < 3} sizes="(min-width: 1240px) 380px, (min-width: 700px) 45vw, 100vw" /></li>)}
+          </ul>
+        ) : (
+          <p style="margin-top:var(--r-5)">{t(lang, "Op dit moment is er niets te koop. Bel gerust om te vragen wat er binnenkort klaar is.", "There's nothing for sale right now. Feel free to call and ask what will be ready soon.")}</p>
+        )}
+      </div>
+    </div>
+  </section>
+</Base>

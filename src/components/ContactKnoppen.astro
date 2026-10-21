@@ -1,14 +1,14 @@
 ---
-// Mailen, bellen en de milieuregel: dezelfde knoppen als op de oude site, nu als toetsen.
+// Aanvraag, bellen en de milieuregel. De aanvraag vervangt de mailknop van de oude site; het mailadres staat op het typeplaatje.
 import Icon from "./Icon.astro";
 import { site } from "../data/site";
-import { w, type Lang } from "../i18n";
+import { w, contactPath, type Lang } from "../i18n";
 
 interface Props { lang: Lang; prijs?: boolean; klein?: boolean }
 const { lang, prijs = false, klein = false } = Astro.props;
 ---
 <div class:list={["contact-knoppen", { klein }]}>
-  <a class="knop knop-oranje" href={`mailto:${site.email}`}><Icon name="mail" size={18} /><span>{w(lang, "mail")}</span></a>
+  <a class="knop knop-oranje" href={contactPath(lang)}><Icon name="mail" size={18} /><span>{w(lang, "sendEnquiry")}</span></a>
   <a class:list={["knop", prijs ? "knop-groen" : "knop-oranje"]} href={site.phoneHref}><Icon name="phone" size={18} /><span>{w(lang, prijs ? "callForPrice" : "call")}</span></a>
   {!klein && <span class="knop knop-stil"><Icon name="recycle" size={18} /><span>{w(lang, "eco")}</span></span>}
 </div>

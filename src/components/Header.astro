@@ -1,10 +1,14 @@
 ---
-// Kop met logo, het menu als rij draaitafeltoetsen (lampje brandt bij de sectie waar je bent)
-// en de taalkeuze als de 33/45-toetsen van een SL1200.
+// Kop met logo en het menu als rij draaitafeltoetsen (lampje brandt bij de sectie waar je bent).
+// Eerst wat Studio 4 Holland doet, daarna "Verhalen" als uitklapper; rechts Te koop, de taalkeuze
+// als de 33/45-toetsen van een SL1200 en de oranje Aanvraag-knop.
+// Op de telefoon staat het menu in de bedieningsbalk onderin (MobielBediening).
 import { Image } from "astro:assets";
 import logo from "../assets/logo-st4hl.png";
-import { getNav, getSection } from "../lib/content";
-import { w, type Lang } from "../i18n";
+import Icon from "./Icon.astro";
+import { getSection, getTeKoop } from "../lib/content";
+import { NAV_HOOFD, NAV_VERHALEN, NAV_LABEL, type SectionKey } from "../data/site";
+import { t, w, teKoopPath, contactPath, type Lang } from "../i18n";
 
 interface Props {
   lang: Lang;
@@ -12,61 +16,79 @@ interface Props {
   current?: string;
 }
 const { lang, alt, current } = Astro.props;
-const nav = await getNav(lang);
-const contact = await getSection("contact", lang);
-const links = [...nav, ...(contact ? [contact] : [])];
+const link = async (s: SectionKey) => {
+  const p = await getSection(s, lang);
+  return p && { key: s, url: p.url, label: NAV_LABEL[s][lang === "en" ? 1 : 0] };
+};
+const hoofd = (await Promise.all(NAV_HOOFD.map(link))).filter((x) => !!x);
+const verhalen = (await Promise.all(NAV_VERHALEN.map(link))).filter((x) => !!x);
+const aantalTeKoop = (await getTeKoop(lang)).length;
+const inVerhalen = verhalen.some((v) => v.key === current);
+const plek = [...hoofd, ...verhalen].find((s) => s.key === current)?.label
+  ?? (current === "te-koop" ? w(lang, "forSale") : current === "contact" ? w(lang, "enquiry") : undefined);
 ---
 <header class="kop">
   <div class="kop-in">
     <a class="logo" href={`/${lang}`} aria-label="Studio 4 Holland, home">
       <Image src={logo} alt="" width={96} height={56} densities={[1, 2]} loading="eager" />
     </a>
+    {plek && <span class="kop-plek mono" aria-hidden="true">{plek}</span>}
 
-    <button class="menu-knop toets" type="button" aria-expanded="false" aria-controls="hoofdmenu">
-      <i class="led" aria-hidden="true"></i><span>{w(lang, "menu")}</span>
-    </button>
-
-    <nav id="hoofdmenu" class="hoofdmenu" aria-label={lang === "en" ? "Main menu" : "Hoofdmenu"}>
+    <nav class="hoofdmenu" aria-label={t(lang, "Hoofdmenu", "Main menu")}>
       <ul class="toetsen">
-        {links.map((s) => (
+        {hoofd.map((s) => (
           <li>
-            <a class="toets" href={s.url} aria-current={current === s.section ? "page" : undefined}>
-              <i class="led" aria-hidden="true"></i>
-              <span>{s.title}</span>
-            </a>
+            <a class="toets" href={s.url} aria-current={current === s.key ? "page" : undefined}><i class="led" aria-hidden="true"></i><span>{s.label}</span></a>
           </li>
         ))}
+        {verhalen.length > 0 && (
+          <li class="menu-verhalen">
+            <details class="uitklap">
+              <summary class="toets toets-stil" data-aan={inVerhalen ? "" : undefined}>
+                {inVerhalen && <i class="led" aria-hidden="true"></i>}{w(lang, "stories")}<Icon name="down" size={14} />
+              </summary>
+              <ul class="uitklap-lijst">
+                {verhalen.map((s) => (
+                  <li><a class="toets" href={s.url} aria-current={current === s.key ? "page" : undefined}><i class="led" aria-hidden="true"></i><span>{s.label}</span></a></li>
+                ))}
+              </ul>
+            </details>
+          </li>
+        )}
       </ul>
     </nav>
 
-    <nav class="taal" aria-label={lang === "en" ? "Language" : "Taal"}>
-      <span class="taal-label" aria-hidden="true">Speed</span>
-      <a class="toets toets-vierkant" href={alt.nl} hreflang="nl" lang="nl" aria-current={lang === "nl" ? "true" : undefined}>
-        <i class="led" aria-hidden="true"></i><span>NL</span><span class="visually-hidden"> Nederlands</span>
-      </a>
-      <a class="toets toets-vierkant" href={alt.en} hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}>
-        <i class="led" aria-hidden="true"></i><span>EN</span><span class="visually-hidden"> English</span>
-      </a>
-    </nav>
+    <div class="kop-rechts">
+      {aantalTeKoop > 0 && (
+        <a class="toets toets-koop" href={teKoopPath(lang)} aria-current={current === "te-koop" ? "page" : undefined}>
+          <i class="led led-groen" aria-hidden="true"></i><span>{w(lang, "forSale")}</span><span class="tel mono">{aantalTeKoop}</span>
+        </a>
+      )}
+      <nav class="taal" aria-label={t(lang, "Taal", "Language")}>
+        <span class="taal-label" aria-hidden="true">Speed</span>
+        <a class="toets toets-vierkant" href={alt.nl} hreflang="nl" lang="nl" aria-current={lang === "nl" ? "true" : undefined}>
+          <i class="led" aria-hidden="true"></i><span>NL</span><span class="visually-hidden"> Nederlands</span>
+        </a>
+        <a class="toets toets-vierkant" href={alt.en} hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}>
+          <i class="led" aria-hidden="true"></i><span>EN</span><span class="visually-hidden"> English</span>
+        </a>
+      </nav>
+      <a class="knop knop-kop" href={contactPath(lang)} aria-current={current === "contact" ? "page" : undefined}><Icon name="mail" size={16} />{w(lang, "enquiry")}</a>
+    </div>
   </div>
 </header>
 
 <script>
-  // Menu op de telefoon: zonder JavaScript staat het gewoon open
-  const knop = document.querySelector<HTMLButtonElement>(".menu-knop");
-  const menu = document.getElementById("hoofdmenu");
-  if (knop && menu) {
-    document.documentElement.classList.add("js-menu");
-    knop.addEventListener("click", () => {
-      const open = knop.getAttribute("aria-expanded") !== "true";
-      knop.setAttribute("aria-expanded", String(open));
-      menu.toggleAttribute("data-open", open);
+  // De uitklapper "Verhalen" sluit bij een klik ernaast of met Escape (werkt zonder JavaScript ook, als <details>).
+  const uitklap = document.querySelector<HTMLDetailsElement>(".kop .uitklap");
+  if (uitklap) {
+    document.addEventListener("click", (e) => {
+      if (uitklap.open && !uitklap.contains(e.target as Node)) uitklap.open = false;
     });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && knop.getAttribute("aria-expanded") === "true") {
-        knop.setAttribute("aria-expanded", "false");
-        menu.removeAttribute("data-open");
-        knop.focus();
+    uitklap.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && uitklap.open) {
+        uitklap.open = false;
+        uitklap.querySelector("summary")?.focus();
       }
     });
   }

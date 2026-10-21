@@ -9,4 +9,5 @@ images:
 - src: wood-chunk-turntable-top-closeup.jpeg
 - src: wood-trunk-yello.jpeg
 - src: woodtrunk-blue-light.jpeg
+soort: hout
 ---

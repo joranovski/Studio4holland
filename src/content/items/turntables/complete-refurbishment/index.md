@@ -13,6 +13,7 @@ images:
 - src: dsc_3210.jpg
 - src: dsc_3212.jpg
 - src: photo0383.jpg
+soort: techniek
 ---
 
 Compleet gereviseerd

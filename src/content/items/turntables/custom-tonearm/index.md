@@ -12,4 +12,5 @@ images:
 - src: dsc_9026.jpg
 - src: dsc_9027.jpg
 - src: dsc_9028.jpg
+soort: techniek
 ---

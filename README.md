@@ -21,7 +21,12 @@ npm run build    # bouwt de site in dist/ (de eerste keer duurt dit even: alle f
 | Teksten en foto's van een sectie (Draaitafels, Luidsprekers, …) | `src/content/sections/<sectie>/index.md` (+ `index.en.md`) |
 | Projecten en producten | `src/content/items/<sectie>/<naam>/index.md` (+ `index.en.md`) |
 | Homepage: welkomtekst | `src/content/sections/home/index.md` |
-| Homepage: "Te koop" en de uitgelichte rijen | vinkjes `forSale` en `uitgelicht` op de items |
+| Homepage: de uitgelichte rijen | vinkje `uitgelicht` op de items |
+| Pagina Te koop (`/nl/te-koop`, `/en/for-sale`) en de teller in het menu | vinkje `forSale` op de items |
+| Menu: volgorde, uitklapper "Verhalen", korte namen | `NAV_HOOFD`, `NAV_VERHALEN`, `NAV_LABEL` in `src/data/site.ts` |
+| Filtertoetsen op een sectiepagina | veld `soort` op de items; de soorten in `SOORTEN` in `src/data/site.ts` |
+| Foto's van de drie ingangen op de homepage | `INGANG_FOTO` in `src/data/site.ts` |
+| WhatsApp-knoppen (staan uit) | `whatsapp` in `src/data/site.ts` |
 | Contactgegevens, KVK, BTW, telefoonnummer | `src/data/site.ts` |
 | Vaste woorden in beide talen (knoppen, labels) | `src/i18n.ts` |
 | Kleuren, letters, maten (designtokens) | `src/styles/tokens.css` |
@@ -69,6 +74,21 @@ De nieuwe site houdt alles wat Google nu van studio4holland.nl kent:
   de juiste taal op elke pagina (de oude site zei overal `lang="en"`), en een meta-description op elke pagina.
 
 Na de overstap: meld `https://www.studio4holland.nl/sitemap.xml` aan in Google Search Console.
+
+## Navigatie
+
+- **Homepage**: begint met "Waarmee kunnen we je helpen?" en drie ingangen: reparatie (naar de aanvraag), op maat (naar Draaitafels) en Te koop.
+  Daaronder de welkomtekst met de speelbare SL1200 en de uitgelichte rijen.
+- **Menu**: eerst Reparaties, Draaitafels, Luidsprekers en Hextech; Connecties en Interieur onder "Verhalen". Rechts de toets Te koop
+  (met het aantal), de taalkeuze en de oranje knop **Aanvraag**.
+- **Aanvraag** (`/nl/contact`, hetzelfde adres als vroeger): drie stappen (waarover, details, contact), met foto's (max. 3, worden in de browser
+  verkleind tot 1600 px). Vanaf een item gaat de titel mee ("Over: Drum draaitafel"). Zonder JavaScript staat alles onder elkaar en werkt het ook.
+  Netlify Forms, formulier `contact`: de velden zijn `soort`, `model`, `klacht[]`, `bericht`, `foto1`–`foto3`, `naam`, `email`, `telefoon`,
+  `voorkeur`, `over`, `pagina` en `taal`.
+- **Filteren**: op Draaitafels filtertoetsen per soort (veld `soort`, in het beheer een keuzelijst) en Te koop, met een tapeteller.
+  De keuze staat in het adres (`/nl/turntables?soort=hout`). Een sectie krijgt de toetsen vanaf 8 items en minstens twee soorten.
+- **Telefoon**: een bedieningsbalk onderin (Werk, Te koop, Aanvraag, Menu); het menu schuift als paneel omhoog. Op een itempagina staat erboven
+  een transportbalk met vorige/volgende en de teller ("12 / 33"); vegen naar links of rechts bladert ook.
 
 ## Talen
 

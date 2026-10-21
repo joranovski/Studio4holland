@@ -12,6 +12,7 @@ images:
 - src: dsc_5245.jpg
 - src: dsc_5246.jpg
 - src: dsc_5251.jpg
+soort: kleur
 ---
 
 Een speciaal gemaakte witte SL

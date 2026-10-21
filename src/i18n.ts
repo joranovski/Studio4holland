@@ -39,6 +39,14 @@ const woorden = {
   notFound: ["Deze pagina bestaat niet (meer)", "This page doesn't exist (anymore)"],
   madeBy: ["Gemaakt door", "Made by"],
   otherLang: ["English", "Nederlands"],
+  stories: ["Verhalen", "Stories"],
+  enquiry: ["Aanvraag", "Enquiry"],
+  sendEnquiry: ["Stuur een aanvraag", "Send an enquiry"],
+  work: ["Werk", "Work"],
+  directContact: ["Direct contact", "Direct contact"],
+  whatWeDo: ["Wat we doen", "What we do"],
+  speedLang: ["Speed · taal", "Speed · language"],
+  everything: ["Alles", "All"],
 } satisfies Record<string, [string, string]>;
 
 export type Woord = keyof typeof woorden;
@@ -46,3 +54,7 @@ export const w = (lang: Lang, key: Woord) => woorden[key][lang === "en" ? 1 : 0]
 
 /** Bedankpagina na het formulier */
 export const thanksPath = (lang: Lang) => t(lang, "/nl/bedankt", "/en/thanks");
+/** Aanvraag (de contactpagina, op het oude adres) */
+export const contactPath = (lang: Lang) => `/${lang}/contact`;
+/** Alles wat te koop is, uit alle secties */
+export const teKoopPath = (lang: Lang) => t(lang, "/nl/te-koop", "/en/for-sale");

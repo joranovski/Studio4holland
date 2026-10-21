@@ -32,6 +32,8 @@ const nlSchema = ({ image }: { image: () => z.ZodTypeAny }) =>
     forSale: z.boolean().optional(),
     /** uitgelicht in de rij van deze sectie op de homepage */
     uitgelicht: z.boolean().optional(),
+    /** soort binnen de sectie, voor de filtertoetsen (zie SOORTEN in src/data/site.ts) */
+    soort: z.string().optional(),
     cover: image().optional(),
     images: z.array(beeld(image)).optional(),
     // alleen op de contactpagina

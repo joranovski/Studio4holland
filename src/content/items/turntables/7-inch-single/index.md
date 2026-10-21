@@ -5,4 +5,5 @@ listed: true
 cover: 7-inch-single-turntable.jpeg
 images:
 - src: 7-inch-single-turntable.jpeg
+soort: vorm
 ---

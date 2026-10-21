@@ -10,7 +10,8 @@ import { Image } from "astro:assets";
 import speakerLijn from "../assets/speaker-lijn.png";
 import draaitafelLijn from "../assets/turntable-lijn.png";
 import { getItems, renderBody, type Page } from "../lib/content";
-import { SECTION_ICON } from "../data/site";
+import { SECTION_ICON, SOORTEN, FILTER_MIN, type SectionKey } from "../data/site";
+import { w } from "../i18n";
 
 interface Props { page: Page }
 const { page } = Astro.props;
@@ -20,6 +21,15 @@ const items = await getItems(page.section, lang);
 const heeftTekst = !!(page.lang === "en" && page.en?.body?.trim() ? page.en.body : page.nl.body)?.trim();
 // Een sectie met één foto toont die naast de tekst; met meer foto's komt er een galerij.
 const enkel = page.photos.length === 1 ? page.photos[0] : undefined;
+// Filtertoetsen: alles, te koop, en de soorten van deze sectie (alleen bij genoeg items)
+const tel = (f: (i: (typeof items)[number]) => boolean) => items.filter(f).length;
+const filters = items.length >= FILTER_MIN
+  ? [
+      { id: "alles", naam: w(lang, "everything"), aantal: items.length, led: "" },
+      ...(tel((i) => i.forSale) ? [{ id: "koop", naam: w(lang, "forSale"), aantal: tel((i) => i.forSale), led: "groen" }] : []),
+      ...(SOORTEN[page.section as SectionKey] ?? []).map((s) => ({ id: s.id, naam: s.naam[lang === "en" ? 1 : 0], aantal: tel((i) => i.soort === s.id), led: "" })).filter((f) => f.aantal > 0),
+    ]
+  : [];
 const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repairs"].includes(page.section) ? draaitafelLijn : undefined;
 ---
 <Base lang={lang} title={page.metaTitle ?? page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover}>
@@ -41,12 +51,62 @@ const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repa
           </div>
         )}
         {page.photos.length > 1 && <div style="margin-top:var(--r-6)"><Galerij photos={page.photos} lang={lang} titel={page.title} /></div>}
+        {filters.length > 2 && (
+          <div class="filterbalk" data-filter hidden style={heeftTekst || page.photos.length ? "margin-top:var(--r-7)" : undefined}>
+            <div class="filter-toetsen" role="group" aria-label={lang === "en" ? "Filter by type" : "Filter op soort"}>
+              {filters.map((f) => (
+                <button type="button" class="toets" data-soort={f.id} aria-pressed={f.id === "alles" ? "true" : "false"}>
+                  <i class:list={["led", { "led-groen": f.led === "groen" }]} aria-hidden="true"></i>{f.naam}<span class="tel mono">{f.aantal}</span>
+                </button>
+              ))}
+            </div>
+            <div class="filter-teller">
+              <span class="mono filter-teller-label" aria-hidden="true">{lang === "en" ? "Counter" : "Teller"}</span>
+              <span class="teller mono" aria-live="polite"><span class="visually-hidden">{lang === "en" ? "Shown: " : "Getoond: "}</span><span data-teller>{String(items.length).padStart(3, "0")}</span></span>
+            </div>
+          </div>
+        )}
         {items.length > 0 && (
-          <ul class="kaarten" style={heeftTekst || page.photos.length ? "margin-top:var(--r-7)" : undefined}>
-            {items.map((i, n) => <li><Kaart item={i} eager={n < 3} sizes="(min-width: 1240px) 380px, (min-width: 700px) 45vw, 100vw" /></li>)}
+          <ul class="kaarten" data-kaarten style={filters.length > 2 ? "margin-top:var(--r-5)" : heeftTekst || page.photos.length ? "margin-top:var(--r-7)" : undefined}>
+            {items.map((i, n) => (
+              <li data-soort={i.soort ?? ""} data-koop={i.forSale ? "" : undefined} style={`view-transition-name:kaart-${n}`}>
+                <Kaart item={i} eager={n < 3} sizes="(min-width: 1240px) 380px, (min-width: 700px) 45vw, 100vw" />
+              </li>
+            ))}
           </ul>
         )}
       </div>
     </div>
   </section>
 </Base>
+
+<script>
+  // Filteren zonder herladen. De keuze staat in het adres (?soort=hout), zodat je hem kunt delen of terugkomt waar je was.
+  // Zonder JavaScript is de filterbalk er niet en zie je gewoon alles.
+  const balk = document.querySelector<HTMLElement>("[data-filter]");
+  const lijst = document.querySelector<HTMLElement>("[data-kaarten]");
+  if (balk && lijst) {
+    balk.hidden = false;
+    const knoppen = [...balk.querySelectorAll<HTMLButtonElement>("button[data-soort]")];
+    const kaarten = [...lijst.querySelectorAll<HTMLLIElement>(":scope > li")];
+    const teller = balk.querySelector<HTMLElement>("[data-teller]")!;
+    const past = (li: HTMLLIElement, s: string) => s === "alles" || (s === "koop" ? li.hasAttribute("data-koop") : li.dataset.soort === s);
+    const kies = (s: string, animeer = true) => {
+      if (!knoppen.some((k) => k.dataset.soort === s)) s = "alles";
+      const zet = () => {
+        knoppen.forEach((k) => k.setAttribute("aria-pressed", String(k.dataset.soort === s)));
+        let n = 0;
+        kaarten.forEach((li) => { const ja = past(li, s); li.hidden = !ja; if (ja) n++; });
+        teller.textContent = String(n).padStart(3, "0");
+      };
+      const stil = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (animeer && !stil && "startViewTransition" in document) (document as any).startViewTransition(zet);
+      else zet();
+      const url = new URL(location.href);
+      if (s === "alles") url.searchParams.delete("soort"); else url.searchParams.set("soort", s);
+      history.replaceState(null, "", url);
+    };
+    knoppen.forEach((k) => k.addEventListener("click", () => kies(k.dataset.soort!)));
+    kies(new URLSearchParams(location.search).get("soort") ?? "alles", false);
+  }
+</script>

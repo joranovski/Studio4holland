@@ -8,6 +8,7 @@ images:
 - src: dsc_4685.jpg
 - src: dsc_4686.jpg
 - src: dsc_4687.jpg
+soort: kleur
 ---
 
 Speciale kleurenversie

@@ -1,0 +1,103 @@
+---
+// Op de telefoon: een bedieningsbalk onderin, binnen bereik van je duim (Werk, Te koop, Aanvraag, Menu),
+// en het menu als bedieningspaneel dat van onderen opschuift.
+// Zonder JavaScript werkt "Menu" ook: het is een link naar #mobiel-menu en het paneel opent via :target.
+import Icon from "./Icon.astro";
+import { getSection, getTeKoop } from "../lib/content";
+import { NAV_HOOFD, NAV_VERHALEN, NAV_LABEL, SECTIONS, site, type SectionKey } from "../data/site";
+import { t, w, teKoopPath, contactPath, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  alt: Record<Lang, string>;
+  current?: string;
+}
+const { lang, alt, current } = Astro.props;
+const link = async (s: SectionKey) => {
+  const p = await getSection(s, lang);
+  return p && { key: s, url: p.url, label: NAV_LABEL[s][lang === "en" ? 1 : 0] };
+};
+const hoofd = (await Promise.all(NAV_HOOFD.map(link))).filter((x) => !!x);
+const verhalen = (await Promise.all(NAV_VERHALEN.map(link))).filter((x) => !!x);
+const heeftTeKoop = (await getTeKoop(lang)).length > 0;
+// "Werk" gaat naar de sectie waar je bent, en anders naar de draaitafels
+const inSectie = (SECTIONS as readonly string[]).includes(current ?? "");
+const werk = (await getSection(inSectie ? current! : "turntables", lang))!;
+---
+<div class="mobiel-menu" id="mobiel-menu" role="dialog" aria-modal="false" aria-label={t(lang, "Menu", "Menu")}>
+  <a class="mobiel-menu-sluit-vlak" href="#" tabindex="-1" aria-hidden="true"></a>
+  <section class="mobiel-paneel">
+    <span class="mobiel-greep" aria-hidden="true"></span>
+    <div class="mobiel-groep">
+      <span class="mobiel-label">{w(lang, "whatWeDo")}</span>
+      <ul class="mobiel-toetsen">
+        {hoofd.map((s) => <li><a class="toets" href={s.url} aria-current={current === s.key ? "page" : undefined}><i class="led" aria-hidden="true"></i>{s.label}</a></li>)}
+      </ul>
+    </div>
+    {verhalen.length > 0 && (
+      <div class="mobiel-groep">
+        <span class="mobiel-label">{w(lang, "stories")}</span>
+        <ul class="mobiel-toetsen">
+          {verhalen.map((s) => <li><a class="toets" href={s.url} aria-current={current === s.key ? "page" : undefined}><i class="led" aria-hidden="true"></i>{s.label}</a></li>)}
+        </ul>
+      </div>
+    )}
+    <div class="mobiel-onder">
+      <div class="mobiel-groep">
+        <span class="mobiel-label">{w(lang, "speedLang")}</span>
+        <div class="mobiel-taal">
+          <a class="toets toets-vierkant" href={alt.nl} hreflang="nl" lang="nl" aria-current={lang === "nl" ? "true" : undefined}><i class="led" aria-hidden="true"></i>NL<span class="visually-hidden"> Nederlands</span></a>
+          <a class="toets toets-vierkant" href={alt.en} hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}><i class="led" aria-hidden="true"></i>EN<span class="visually-hidden"> English</span></a>
+        </div>
+      </div>
+      <div class="mobiel-groep mobiel-direct">
+        <span class="mobiel-label">{w(lang, "directContact")}</span>
+        <div class="mobiel-direct-knoppen">
+          <a class="knop knop-icoon" href={site.phoneHref} aria-label={w(lang, "call")}><Icon name="phone" size={20} /></a>
+          {site.whatsapp && <a class="knop knop-icoon knop-groen" href={site.whatsapp} aria-label="WhatsApp"><Icon name="whatsapp" size={20} /></a>}
+          <a class="toets knop-icoon" href={`mailto:${site.email}`} aria-label={w(lang, "mail")}><Icon name="mail" size={20} /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="balk" aria-label={t(lang, "Bediening", "Controls")}>
+  <a class="balk-toets" href={werk.url} aria-current={inSectie ? "page" : undefined}><i class="led" aria-hidden="true"></i>{w(lang, "work")}</a>
+  {heeftTeKoop && <a class="balk-toets" href={teKoopPath(lang)} aria-current={current === "te-koop" ? "page" : undefined}><i class="led led-groen" aria-hidden="true"></i>{w(lang, "forSale")}</a>}
+  <a class="balk-toets balk-oranje" href={contactPath(lang)} aria-current={current === "contact" ? "page" : undefined}><Icon name="mail" size={16} />{w(lang, "enquiry")}</a>
+  <a class="balk-toets balk-menu" href="#mobiel-menu" aria-controls="mobiel-menu" aria-expanded="false">
+    <span class="balk-menu-open"><Icon name="menu" size={16} />{w(lang, "menu")}</span>
+    <span class="balk-menu-dicht"><Icon name="close" size={16} />{w(lang, "close")}</span>
+  </a>
+</nav>
+
+<script>
+  // Met JavaScript: het menu opent en sluit zonder dat het adres verandert, sluit met Escape of een tik ernaast,
+  // en de focus springt naar het paneel en weer terug.
+  const knop = document.querySelector<HTMLAnchorElement>(".balk-menu");
+  const menu = document.getElementById("mobiel-menu");
+  if (knop && menu) {
+    const zet = (open: boolean, terug = true) => {
+      menu.classList.toggle("open", open);
+      document.documentElement.classList.toggle("menu-open", open);
+      knop.setAttribute("aria-expanded", String(open));
+      if (open) menu.querySelector<HTMLElement>(".mobiel-paneel a")?.focus({ preventScroll: true });
+      else if (terug) knop.focus({ preventScroll: true });
+    };
+    if (location.hash === "#mobiel-menu") history.replaceState(null, "", location.pathname + location.search);
+    knop.addEventListener("click", (e) => {
+      e.preventDefault();
+      zet(!menu.classList.contains("open"));
+    });
+    menu.querySelector(".mobiel-menu-sluit-vlak")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      zet(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.classList.contains("open")) zet(false);
+    });
+    // Op een breed scherm is er geen balk: dan het paneel dicht
+    matchMedia("(min-width: 821px)").addEventListener("change", (m) => m.matches && zet(false, false));
+  }
+</script>

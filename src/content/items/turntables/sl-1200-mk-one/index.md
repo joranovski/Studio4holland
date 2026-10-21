@@ -8,6 +8,7 @@ images:
 - src: 2015-01-24-14.28.09.jpg
 - src: 2015-01-24-14.59.58.jpg
 - src: 2015-01-24-15.00.21.jpg
+soort: techniek
 ---
 
 SL1200 MK One

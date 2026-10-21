@@ -31,6 +31,8 @@ export interface Page {
   listed: boolean;
   forSale: boolean;
   uitgelicht: boolean;
+  /** soort binnen de sectie (filtertoetsen) */
+  soort?: string;
   metaTitle?: string;
   metaDescription?: string;
   cover?: ImageMetadata;
@@ -88,6 +90,7 @@ function build(kind: Page["kind"], nl: Nl, en: En | undefined, lang: Lang): Page
     listed: d.listed,
     forSale: !!d.forSale || (d.tags ?? []).some((t) => /^(sale|te koop)$/i.test(t)),
     uitgelicht: !!d.uitgelicht,
+    soort: d.soort,
     metaTitle: (useEn && en!.data.metaTitle) || (lang === "nl" ? d.metaTitle : undefined),
     metaDescription: (useEn && en!.data.metaDescription) || (lang === "nl" ? d.metaDescription : undefined),
     cover: d.cover,
@@ -145,7 +148,7 @@ export async function getUitgelicht(section: string, lang: Lang, max: number) {
 /** Alles met het vinkje "Te koop", uit alle secties */
 export async function getTeKoop(lang: Lang, max = 99) {
   const lijsten = await Promise.all(SECTIONS.map((s) => getItems(s, lang)));
-  return lijsten.flat().filter((i) => i.forSale && i.cover).slice(0, max);
+  return lijsten.flat().filter((i) => i.forSale).slice(0, max);
 }
 
 export async function renderBody(p: Page) {
@@ -171,7 +174,15 @@ export async function itemPaths(lang: Lang) {
       const i = listed.indexOf(page);
       out.push({
         params: { section: sec.slug, slug: page.slug },
-        props: { page, sectionPage: sec, prev: i > 0 ? listed[i - 1] : undefined, next: i >= 0 && i < listed.length - 1 ? listed[i + 1] : undefined },
+        props: {
+          page,
+          sectionPage: sec,
+          prev: i > 0 ? listed[i - 1] : undefined,
+          next: i >= 0 && i < listed.length - 1 ? listed[i + 1] : undefined,
+          // plek in de lijst, voor de teller ("08 / 33") op de telefoon
+          pos: i >= 0 ? i + 1 : undefined,
+          totaal: listed.length,
+        },
       });
     }
   }
