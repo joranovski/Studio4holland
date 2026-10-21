@@ -21,6 +21,8 @@ const items = await getItems(page.section, lang);
 const heeftTekst = !!(page.lang === "en" && page.en?.body?.trim() ? page.en.body : page.nl.body)?.trim();
 // Een sectie met één foto toont die naast de tekst; met meer foto's komt er een galerij.
 const enkel = page.photos.length === 1 ? page.photos[0] : undefined;
+// Lange intro (meer dan 250 woorden): openingsalinea groot en de rest in twee kolommen, zonder lijntekening ernaast
+const lang_ = page.woorden > 250 && !enkel;
 // Filtertoetsen: alles, te koop, en de soorten van deze sectie (alleen bij genoeg items)
 const tel = (f: (i: (typeof items)[number]) => boolean) => items.filter(f).length;
 const filters = items.length >= FILTER_MIN
@@ -41,11 +43,11 @@ const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repa
       </div>
       <div class="paneel">
         {(heeftTekst || enkel) && (
-          <div class="sectie-intro">
+          <div class:list={["sectie-intro", { lang: lang_ }]}>
             <div class="proza">{page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}<Content /></div>
             {enkel ? (
               <figure class="sectie-intro-beeld" style="margin:0"><Foto src={enkel.src} alt={enkel.alt} sizes="(min-width: 900px) 40vw, 100vw" widths={[640, 1200]} loading="eager" /></figure>
-            ) : artwork ? (
+            ) : artwork && !lang_ ? (
               <div class="artwork artwork-draaitafel" aria-hidden="true" style="justify-self:center"><Image src={artwork} alt="" width={400} /></div>
             ) : null}
           </div>

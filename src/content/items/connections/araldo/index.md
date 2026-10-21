@@ -3,13 +3,13 @@ title: Araldo
 order: 1
 uitgelicht: true
 listed: true
+citaat: You have got to hear them. Feel them. Experience them!
 cover: dsc_5638.jpg
 images:
 - src: dsc_5638.jpg
 ---
 
-Studio4Holland!\
-Speakers.
+## Speakers
 
 About 3 years ago, I accidentally met an Englishman here in the Netherlands just looking for a used Cambridge Audio cd player he was offering. I was blown away when we went to his studio just to see and hear the cd player. I was even more amazed when he told me that the sound I was hearing came from his own build speakers. Especially the small size and the great sound were truly astonishing!
 
@@ -22,7 +22,8 @@ A year ago I asked him to rebuild my front speakers. I already had a pair of Tan
 
 So this is my story and I can tell you all that I am a real critic when it comes to audio and sound. I can really recommend meeting this man and to listen and see what he is capable of building. I have added some pictures on my blog of my speakers and from Marvin but appearance isn’t everything. You have got to hear them. Feel them. Experience them! I challenge you to come and listen to my set-up.
 
-**Turntables.**
+## Turntables
+
 Another thing he is a master of, is refurbishing and pimping turntables. He specializes in the Technics SL 1200 / 1210/ MK2 /MK5 / M3D’s and M5G’s. From what I understand of this – he strips the deck completely and then changes and re-engineers a few things – for example he will retro fit any tone arm of your choice (SME – Jelco – Rega – or his own built tone arms) – then the main deck will have bits replaced, what is broken or worn out, and then he gives the main deck a funky color or subtle color depending on what your taste is, they truly are a work of art. You can check out some of the decks yourself at www.vinylengine.com click on gallery / scroll down to Technics / then search Leon 1200.
 
 Thanks for reading - Araldo

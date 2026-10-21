@@ -21,6 +21,10 @@ export interface Page {
   lang: Lang;
   title: string;
   subtitle?: string;
+  /** citaat voor de kantlijn van een verhaal */
+  citaat?: string;
+  /** aantal woorden in de tekst (lange teksten krijgen de tijdschriftopmaak) */
+  woorden: number;
   slug: string;
   url: string;
   /** hetzelfde adres in de andere taal */
@@ -81,6 +85,8 @@ function build(kind: Page["kind"], nl: Nl, en: En | undefined, lang: Lang): Page
     lang,
     title,
     subtitle: (useEn && en!.data.subtitle) || d.subtitle,
+    citaat: (useEn && en!.data.citaat) || d.citaat,
+    woorden: (body ?? "").split(/\s+/).filter(Boolean).length,
     slug: lang === "en" ? enSlug : nlSlug,
     url: path(lang),
     alt: { nl: path("nl"), en: path("en") },

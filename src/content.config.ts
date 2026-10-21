@@ -26,6 +26,8 @@ const nlSchema = ({ image }: { image: () => z.ZodTypeAny }) =>
     year: z.number().optional(),
     tags: z.array(z.string()).optional(),
     subtitle: z.string().optional(),
+    /** citaat dat groot in de kantlijn van een verhaal staat (letterlijk uit de tekst) */
+    citaat: z.string().optional(),
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
     /** te koop: toont "Bel ons voor de prijs" en staat in "Te koop" op de homepage */
@@ -48,6 +50,7 @@ const enSchema = z.object({
   title: z.string().optional(),
   slug: z.string().optional(),
   subtitle: z.string().optional(),
+  citaat: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
 });

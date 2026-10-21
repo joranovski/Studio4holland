@@ -1,5 +1,4 @@
 ---
-{}
 ---
 
 What could I do with a stack of old crappy unplayable vinyl records?\

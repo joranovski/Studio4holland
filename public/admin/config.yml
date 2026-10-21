@@ -624,6 +624,12 @@ collections:
     widget: string
     required: false
     i18n: true
+  - name: citaat
+    label: Citaat
+    widget: string
+    required: false
+    i18n: true
+    hint: Een zin letterlijk uit de tekst; staat groot in de kantlijn van het verhaal.
   - name: slug
     label: Eigen adres (optioneel)
     widget: string

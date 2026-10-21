@@ -6,6 +6,7 @@ import Galerij from "../components/Galerij.astro";
 import { Image } from "astro:assets";
 import arm from "../assets/technics-arm.png";
 import draaitafelLijn from "../assets/turntable-lijn.png";
+import Foto from "../components/Foto.astro";
 import { renderBody, type Page } from "../lib/content";
 import { SECTION_ICON, site } from "../data/site";
 import { w, t, contactPath } from "../i18n";
@@ -25,6 +26,13 @@ const aanvraagTekst = page.forSale
     : t(lang, "Ik wil er ook zo één", "I'd like one too");
 const aanvraagUrl = `${contactPath(lang)}?${new URLSearchParams({ soort, over: page.title, pagina: page.url })}`;
 const twee = (n: number) => String(n).padStart(2, "0");
+// Verhalen (klantverhalen bij Connecties, en elke lange tekst) krijgen een tijdschriftopmaak;
+// items met weinig tekst geven de foto's meer ruimte.
+const verhaal = page.section === "connections" || page.woorden >= 250;
+const kort = page.woorden < 60;
+const ondertitel = page.subtitle && page.subtitle !== page.title ? page.subtitle : undefined;
+const openingsfoto = page.cover ?? page.photos[0]?.src;
+const leestijd = Math.max(1, Math.round(page.woorden / 220));
 const schema = {
   "@context": "https://schema.org",
   "@type": page.forSale ? "Product" : "CreativeWork",
@@ -43,37 +51,42 @@ const schema = {
         <span aria-hidden="true">/</span>
         <span aria-current="page">{page.title}</span>
       </nav>
-      <div class="tab-rij">
-        <h1 class="tab">{page.title}</h1>
-      </div>
-      <div class="paneel">
-        <div class="item-raster">
-          <div class="item-tekst">
-            {(page.year || tags.length > 0 || page.forSale) && (
-              <ul class="meta" aria-label={t(lang, "Kenmerken", "Details")}>
-                {page.forSale && <li class="chip" style="background:var(--groen-500);color:#fff;font-weight:700">{w(lang, "forSale")}</li>}
-                {page.year && <li class="chip chip-jaar">{page.year}</li>}
-                {tags.map((tg) => <li class="chip"><Icon name="tag" size={13} />{tg}</li>)}
-              </ul>
+      {verhaal ? (
+        <>
+          <header class="verhaal-kop">
+            <p class="verhaal-kicker mono"><i class="led led-aan" aria-hidden="true"></i>{sectionPage.title}{page.section === "connections" && ` · ${t(lang, "Klantverhaal", "Customer story")}`}</p>
+            <h1>{page.title}</h1>
+            {ondertitel && <p class="verhaal-standfirst">{ondertitel}</p>}
+            <p class="verhaal-meta mono">{page.year && <span>{page.year}</span>}<span>{leestijd} min {t(lang, "lezen", "read")}</span>{page.photos.length > 0 && <span>{page.photos.length} {w(lang, "photos")}</span>}</p>
+          </header>
+          <div class="paneel verhaal">
+            {openingsfoto && (
+              <figure class="verhaal-opening">
+                <Foto src={openingsfoto} alt={page.photos[0]?.alt ?? page.title} sizes="(min-width: 1240px) 1240px, 100vw" widths={[800, 1400, 2000]} loading="eager" fetchpriority="high" />
+              </figure>
             )}
-            {page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}
-            <div class="proza"><Content /></div>
-            <div class="contact-knoppen klein">
+            <div class="verhaal-raster">
+              <div class="verhaal-tekst proza">
+                {page.citaat && (
+                  <blockquote class="citaat" aria-hidden="true"><p>{page.citaat}</p></blockquote>
+                )}
+                <Content />
+              </div>
+              <aside class="verhaal-zij">
+                <p class="verhaal-zij-kop">{t(lang, "Zelf zo'n set?", "Want one like this?")}</p>
+                <p>{t(lang, "Elke speaker en elk deck wordt in Nijkerk met de hand gebouwd, afgestemd op jouw ruimte.", "Every speaker and deck is hand built in Nijkerk, tuned to your room.")}</p>
+                <div class="contact-knoppen klein">
               <a class="knop" href={aanvraagUrl}><Icon name="mail" size={18} /><span>{aanvraagTekst}</span></a>
               <a class={page.forSale ? "knop knop-groen" : "toets toets-gewoon"} href={site.phoneHref}><Icon name="phone" size={18} /><span>{w(lang, page.forSale ? "callForPrice" : "call")}</span></a>
             </div>
-            {technics && (
-              <div class="item-arm" aria-hidden="true">
-                <Image src={arm} alt="" width={96} densities={[1, 2]} />
-                <div class="artwork artwork-draaitafel" style="width:220px"><Image src={draaitafelLijn} alt="" width={220} densities={[1, 2]} /></div>
-              </div>
+              </aside>
+            </div>
+            {page.photos.length > 1 && (
+              <section class="verhaal-fotos" aria-label={t(lang, "Foto's", "Photos")}>
+                <h2 class="verhaal-fotos-kop mono">{t(lang, "Foto's", "Photos")}</h2>
+                <Galerij photos={page.photos} lang={lang} titel={page.title} />
+              </section>
             )}
-          </div>
-          <div>
-            <Galerij photos={page.photos} lang={lang} titel={page.title} />
-          </div>
-        </div>
-
         {(prev || next) && (
           <nav class="bladeren" aria-label={t(lang, `Bladeren door ${sectionPage.title}`, `Browse ${sectionPage.title}`)} data-veeg>
             {prev ? <a class="toets bladeren-vorige" href={prev.url} rel="prev"><Icon name="prev" size={16} /><span><small>{w(lang, "previous")}</small><b>{prev.title}</b></span></a> : <span class="bladeren-leeg"></span>}
@@ -86,7 +99,55 @@ const schema = {
             {next ? <a class="toets bladeren-volgende" href={next.url} rel="next"><span><small>{w(lang, "next")}</small><b>{next.title}</b></span><Icon name="next" size={16} /></a> : <span class="bladeren-leeg"></span>}
           </nav>
         )}
-      </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div class="tab-rij">
+            <h1 class="tab">{page.title}</h1>
+          </div>
+          <div class="paneel">
+            <div class:list={["item-raster", { kort }]}>
+              <div class="item-tekst">
+                {(page.year || tags.length > 0 || page.forSale) && (
+                  <ul class="meta" aria-label={t(lang, "Kenmerken", "Details")}>
+                    {page.forSale && <li class="chip" style="background:var(--groen-500);color:#fff;font-weight:700">{w(lang, "forSale")}</li>}
+                    {page.year && <li class="chip chip-jaar">{page.year}</li>}
+                    {tags.map((tg) => <li class="chip"><Icon name="tag" size={13} />{tg}</li>)}
+                  </ul>
+                )}
+                {ondertitel && <p class="intro">{ondertitel}</p>}
+                <div class="proza item-proza"><Content /></div>
+                <div class="contact-knoppen klein">
+              <a class="knop" href={aanvraagUrl}><Icon name="mail" size={18} /><span>{aanvraagTekst}</span></a>
+              <a class={page.forSale ? "knop knop-groen" : "toets toets-gewoon"} href={site.phoneHref}><Icon name="phone" size={18} /><span>{w(lang, page.forSale ? "callForPrice" : "call")}</span></a>
+            </div>
+                {technics && !kort && (
+                  <div class="item-arm" aria-hidden="true">
+                    <Image src={arm} alt="" width={96} densities={[1, 2]} />
+                    <div class="artwork artwork-draaitafel" style="width:220px"><Image src={draaitafelLijn} alt="" width={220} densities={[1, 2]} /></div>
+                  </div>
+                )}
+              </div>
+              <div class="item-fotos">
+                <Galerij photos={page.photos} lang={lang} titel={page.title} eager />
+              </div>
+            </div>
+        {(prev || next) && (
+          <nav class="bladeren" aria-label={t(lang, `Bladeren door ${sectionPage.title}`, `Browse ${sectionPage.title}`)} data-veeg>
+            {prev ? <a class="toets bladeren-vorige" href={prev.url} rel="prev"><Icon name="prev" size={16} /><span><small>{w(lang, "previous")}</small><b>{prev.title}</b></span></a> : <span class="bladeren-leeg"></span>}
+            {pos && totaal && (
+              <span class="bladeren-midden">
+                <span class="teller mono"><span class="visually-hidden">{t(lang, "Item", "Item")} </span>{twee(pos)} / {twee(totaal)}</span>
+                <span class="bladeren-hint">{t(lang, "veeg of druk voor het volgende werk", "swipe or tap for the next piece")}</span>
+              </span>
+            )}
+            {next ? <a class="toets bladeren-volgende" href={next.url} rel="next"><span><small>{w(lang, "next")}</small><b>{next.title}</b></span><Icon name="next" size={16} /></a> : <span class="bladeren-leeg"></span>}
+          </nav>
+        )}
+          </div>
+        </>
+      )}
     </div>
   </article>
 </Base>

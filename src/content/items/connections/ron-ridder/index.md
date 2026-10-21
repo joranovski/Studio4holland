@@ -3,7 +3,7 @@ title: Ron ridder
 order: 3
 uitgelicht: true
 listed: true
-subtitle: I have a TV set from Loewe with a sound projector. This sound projector is giving a surround effect using only one speaker. The TV set supports digital radio.
+citaat: I started looking for a hidden pair of the “big” ones but they were not there.
 cover: dsc_3703.jpg
 images:
 - src: dsc_3703.jpg
@@ -31,4 +31,6 @@ I told Studio 4 Holland about that i was looking for subwoofers to use inside as
 
 Probably the frequency range of the subwoofer of Studio 4 Holland is much wider which also is making the gap between the bass and middle part of the sound disappear. Because the bass is rolling over the floor the volume doesn’t have to be that high to get a nice bass. Something that works perfectly outside. Once I used only one subwoofer at a street parade. The bass coming from the subwoofer didn’t got blown away by the wind and rolled all the way to the end of the street.
 
-The size of the subwoofers can be called compact especially for the sound they produce. Moving the subwoofers can be done easily by one person. Even putting them in the van. Yes, I am very pleased with the subwoofers from Studio 4 Holland. Ronald R.J.T.V. video productions
+The size of the subwoofers can be called compact especially for the sound they produce. Moving the subwoofers can be done easily by one person. Even putting them in the van. Yes, I am very pleased with the subwoofers from Studio 4 Holland.
+
+Ronald, R.J.T.V. video productions

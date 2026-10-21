@@ -3,7 +3,7 @@ title: Edwin
 order: 2
 uitgelicht: true
 listed: true
-subtitle: When we remodeled our house I wanted expand our Magnat 2.1 soundsystem to an 5.1, my wife didn’t want speakers that really stood out because the decoration was going to be minimalistic.
+citaat: All in all we are very happy and impressed by the whole set-up!
 cover: dsc1849.jpg
 images:
 - src: dsc1840.jpg
