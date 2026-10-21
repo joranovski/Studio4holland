@@ -28,6 +28,8 @@ const nlSchema = ({ image }: { image: () => z.ZodTypeAny }) =>
     subtitle: z.string().optional(),
     /** citaat dat groot in de kantlijn van een verhaal staat (letterlijk uit de tekst) */
     citaat: z.string().optional(),
+    /** sterke punten (USP's) van een sectie: titel en tekst, als genummerde blokken op de pagina */
+    usps: z.array(z.object({ titel: z.string(), tekst: z.string() })).optional(),
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
     /** te koop: toont "Bel ons voor de prijs" en staat in "Te koop" op de homepage */

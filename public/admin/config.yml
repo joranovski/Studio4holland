@@ -795,6 +795,21 @@ collections:
     widget: richtext
     required: false
     i18n: true
+  - name: usps
+    label: Sterke punten
+    label_singular: Sterk punt
+    widget: list
+    required: false
+    i18n: true
+    hint: Genummerde blokken onder de intro (zoals bij Luidsprekers). De eerste alinea is de korte uitleg; de rest staat achter "Lees verder".
+    summary: '{{fields.titel}}'
+    fields:
+    - name: titel
+      label: Titel
+      widget: string
+    - name: tekst
+      label: Tekst
+      widget: text
   - name: cover
     label: Hoofdfoto (voor delen op sociale media)
     widget: image

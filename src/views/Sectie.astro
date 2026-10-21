@@ -10,8 +10,8 @@ import { Image } from "astro:assets";
 import speakerLijn from "../assets/speaker-lijn.png";
 import draaitafelLijn from "../assets/turntable-lijn.png";
 import { getItems, renderBody, type Page } from "../lib/content";
-import { SECTION_ICON, SOORTEN, FILTER_MIN, type SectionKey } from "../data/site";
-import { w } from "../i18n";
+import { SECTION_ICON, SOORTEN, FILTER_MIN, SECTIE_CTA, type SectionKey } from "../data/site";
+import { w, t, contactPath } from "../i18n";
 
 interface Props { page: Page }
 const { page } = Astro.props;
@@ -32,22 +32,70 @@ const filters = items.length >= FILTER_MIN
       ...(SOORTEN[page.section as SectionKey] ?? []).map((s) => ({ id: s.id, naam: s.naam[lang === "en" ? 1 : 0], aantal: tel((i) => i.soort === s.id), led: "" })).filter((f) => f.aantal > 0),
     ]
   : [];
+// Sterke punten: tekst in alinea's (lege regel = nieuwe alinea)
+const usps = (page.usps ?? []).map((u) => ({ titel: u.titel, alineas: u.tekst.trim().split(/\n\s*\n/).map((a) => a.replace(/\s*\n\s*/g, " ")) }));
+const cta = SECTIE_CTA[page.section as SectionKey];
+const ki = lang === "en" ? 1 : 0;
 const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repairs"].includes(page.section) ? draaitafelLijn : undefined;
 ---
 <Base lang={lang} title={page.metaTitle ?? page.title} description={page.metaDescription ?? (page.excerpt || undefined)} alt={page.alt} current={page.section} image={page.cover}>
   <section class="sectie">
     <div class="wrap">
-      <div class="tab-rij">
-        <h1 class="tab"><Icon name={SECTION_ICON[page.section]} size={26} />{page.title}</h1>
-        <ContactKnoppen lang={lang} klein />
-      </div>
+      {enkel ? (
+        <header class="sectie-held">
+          <div class="sectie-held-tekst">
+            <p class="verhaal-kicker mono"><i class="led led-aan" aria-hidden="true"></i>Studio 4 Holland · {t(lang, "Handgemaakt in Nijkerk", "Hand built in Nijkerk")}</p>
+            <h1>{page.title}</h1>
+            {heeftTekst && <div class="proza sectie-held-lead"><Content /></div>}
+            <ContactKnoppen lang={lang} klein />
+          </div>
+          <figure class="sectie-held-beeld">
+            {artwork && <div class="artwork sectie-held-artwork" aria-hidden="true"><Image src={artwork} alt="" width={400} /></div>}
+            <Foto src={enkel.src} alt={enkel.alt} sizes="(min-width: 1240px) 680px, (min-width: 900px) 55vw, 100vw" widths={[700, 1200]} loading="eager" fetchpriority="high" />
+          </figure>
+        </header>
+      ) : (
+        <div class="tab-rij">
+          <h1 class="tab"><Icon name={SECTION_ICON[page.section]} size={26} />{page.title}</h1>
+          <ContactKnoppen lang={lang} klein />
+        </div>
+      )}
       <div class="paneel">
-        {(heeftTekst || enkel) && (
+        {usps.length > 0 && (
+          <section class="usps" aria-labelledby="usps-kop">
+            <h2 id="usps-kop" class="usps-kop mono">{t(lang, "Onze principes", "Our principles")}</h2>
+            <ol class="usp-lijst">
+              {usps.map((u, n) => (
+                <li class="usp">
+                  <span class="usp-nr mono" aria-hidden="true"><i class="led led-aan"></i>CH {String(n + 1).padStart(2, "0")}</span>
+                  <h3>{u.titel}</h3>
+                  <div class="usp-tekst">
+                    <p>{u.alineas[0]}</p>
+                    {u.alineas.length > 1 && (
+                      <details class="usp-meer">
+                        <summary><span class="usp-meer-open">{t(lang, "Lees verder", "Read more")}</span><span class="usp-meer-dicht">{t(lang, "Minder", "Less")}</span><Icon name="down" size={14} /></summary>
+                        {u.alineas.slice(1).map((a) => <p>{a}</p>)}
+                      </details>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+        {cta && (
+          <div class="cta-band">
+            <div>
+              <p class="cta-kop">{cta.kop[ki]}</p>
+              <p>{cta.tekst[ki]}</p>
+            </div>
+            <a class="knop" href={`${contactPath(lang)}?${new URLSearchParams({ soort: cta.soort, over: page.title, pagina: page.url })}`}><Icon name="mail" size={18} />{cta.knop[ki]}</a>
+          </div>
+        )}
+        {!enkel && heeftTekst && (
           <div class:list={["sectie-intro", { lang: lang_ }]}>
             <div class="proza">{page.subtitle && page.subtitle !== page.title && <p class="intro">{page.subtitle}</p>}<Content /></div>
-            {enkel ? (
-              <figure class="sectie-intro-beeld" style="margin:0"><Foto src={enkel.src} alt={enkel.alt} sizes="(min-width: 900px) 40vw, 100vw" widths={[640, 1200]} loading="eager" /></figure>
-            ) : artwork && !lang_ ? (
+            {artwork && !lang_ ? (
               <div class="artwork artwork-draaitafel" aria-hidden="true" style="justify-self:center"><Image src={artwork} alt="" width={400} /></div>
             ) : null}
           </div>
@@ -68,6 +116,7 @@ const artwork = page.section === "speakers" ? speakerLijn : ["turntables", "repa
             </div>
           </div>
         )}
+        {items.length > 0 && usps.length > 0 && <h2 class="usps-kop mono werk-kop">{t(lang, "Het werk", "The work")}</h2>}
         {items.length > 0 && (
           <ul class="kaarten" data-kaarten style={filters.length > 2 ? "margin-top:var(--r-5)" : heeftTekst || page.photos.length ? "margin-top:var(--r-7)" : undefined}>
             {items.map((i, n) => (

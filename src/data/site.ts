@@ -84,3 +84,13 @@ export const SECTION_ICON: Record<string, string> = {
   interiors: "chair",
   contact: "card",
 };
+
+/** Een oproep onder de sterke punten van een sectie (alleen waar het past) */
+export const SECTIE_CTA: Partial<Record<SectionKey, { kop: [string, string]; tekst: [string, string]; knop: [string, string]; soort: string }>> = {
+  speakers: {
+    kop: ["Horen is geloven.", "Hearing is believing."],
+    tekst: ["Kom luisteren in de werkplaats in Nijkerk, of laat je huidige speakers doormeten.", "Come and listen at the workshop in Nijkerk, or have your current speakers measured."],
+    knop: ["Vraag een demo aan", "Ask for a demo"],
+    soort: "maat",
+  },
+};

@@ -23,6 +23,8 @@ export interface Page {
   subtitle?: string;
   /** citaat voor de kantlijn van een verhaal */
   citaat?: string;
+  /** sterke punten van een sectie */
+  usps?: { titel: string; tekst: string }[];
   /** aantal woorden in de tekst (lange teksten krijgen de tijdschriftopmaak) */
   woorden: number;
   slug: string;
@@ -86,6 +88,7 @@ function build(kind: Page["kind"], nl: Nl, en: En | undefined, lang: Lang): Page
     title,
     subtitle: (useEn && en!.data.subtitle) || d.subtitle,
     citaat: (useEn && en!.data.citaat) || d.citaat,
+    usps: (useEn && en!.data.usps) || d.usps,
     woorden: (body ?? "").split(/\s+/).filter(Boolean).length,
     slug: lang === "en" ? enSlug : nlSlug,
     url: path(lang),
