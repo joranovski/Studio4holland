@@ -1,6 +1,6 @@
 ---
 title: Custom SL1200
-order: 9
+order: 10
 forSale: true
 listed: true
 tags:

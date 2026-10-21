@@ -1,3 +1,3 @@
 ---
-metaTitle: Typical amateur attempt at a repair
+title: Typical amateur attempt at a repair
 ---

@@ -1,6 +1,6 @@
 ---
 title: Platter refurbishment
-order: 5
+order: 3
 listed: true
 cover: closeup-platter.jpeg
 images:

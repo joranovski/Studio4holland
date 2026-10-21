@@ -1,6 +1,6 @@
 ---
 title: 7 inch single
-order: 24
+order: 1
 listed: true
 cover: 7-inch-single-turntable.jpeg
 images:

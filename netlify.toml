@@ -107,6 +107,12 @@
   to = "/nl"
   status = 301
 
+# Kirby gaf dit item in het Engels ook onder de Nederlandse mapnaam
+[[redirects]]
+  from = "/en/turntables/complete-refurbishment"
+  to = "/en/turntables/arm-board-special-projects"
+  status = 301
+
 # ── Items die (nog) niet op de nieuwe site staan ─────────
 # Zonder force werkt dit alleen als er geen pagina bestaat: een onbekend item valt terug
 # op het overzicht van zijn sectie in plaats van een 404. Tijdelijk (302), omdat de

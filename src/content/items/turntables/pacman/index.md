@@ -1,6 +1,6 @@
 ---
 title: pacman
-order: 23
+order: 21
 listed: true
 cover: pacman-sl.jpeg
 images:

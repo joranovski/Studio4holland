@@ -1,6 +1,6 @@
 ---
 title: Custom tonearm
-order: 25
+order: 11
 listed: true
 cover: dsc_9091.jpg
 images:

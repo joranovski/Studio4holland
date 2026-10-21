@@ -1,6 +1,6 @@
 ---
 title: Kleuren collectie
-order: 17
+order: 6
 listed: true
 cover: dsc_5083.jpg
 images:

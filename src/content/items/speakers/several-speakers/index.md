@@ -1,6 +1,6 @@
 ---
 title: Several Speakers
-order: 9
+order: 3
 listed: true
 cover: 3-speakers.jpg
 images:

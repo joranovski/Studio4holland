@@ -8,7 +8,7 @@ images:
 - src: collection-custom-230v-outlets.jpeg
 ---
 
-![](highend-turntables-on-display.jpeg)
+![](20211116_123345-2.jpg)
 
 ## Why and how did Studio 4 Holland get created.
 

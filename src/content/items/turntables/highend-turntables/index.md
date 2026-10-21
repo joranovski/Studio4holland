@@ -1,6 +1,6 @@
 ---
 title: Highend turntables
-order: 28
+order: 17
 listed: true
 cover: highend-turntables-on-display.jpeg
 images:

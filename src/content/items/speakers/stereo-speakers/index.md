@@ -1,6 +1,6 @@
 ---
 title: Stereo speakers
-order: 8
+order: 7
 listed: true
 cover: dsc_4278.jpg
 images:

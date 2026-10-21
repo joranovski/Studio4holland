@@ -1,5 +1,5 @@
 ---
-title: Reparaties
+title: Technics Reparaties
 slug: repairs
 order: 4
 listed: true

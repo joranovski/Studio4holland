@@ -1,6 +1,6 @@
 ---
 title: Arm ombouw
-order: 7
+order: 2
 listed: true
 cover: dsc_3119.jpg
 images:

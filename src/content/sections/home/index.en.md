@@ -4,7 +4,7 @@ metaTitle: Studio 4 Holland - for technics turntable maintenance, repairs and cu
 metaDescription: The best address for you technics repair and customization
 ---
 
-![](highend-turntables-on-display.jpeg)
+![](20211116_123345-2.jpg)
 
 ## Why and how did Studio 4 Holland get created.
 

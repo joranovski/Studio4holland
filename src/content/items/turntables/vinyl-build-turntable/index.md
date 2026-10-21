@@ -1,6 +1,6 @@
 ---
 title: Vinyl build turntable
-order: 2
+order: 31
 listed: true
 cover: vinyl-build-turntable.jpeg
 images:

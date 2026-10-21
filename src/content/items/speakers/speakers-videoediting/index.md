@@ -1,6 +1,6 @@
 ---
 title: Luidsprekers voor videoediting
-order: 4
+order: 6
 listed: true
 year: 2015
 tags:

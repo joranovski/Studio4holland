@@ -1,6 +1,6 @@
 ---
 title: Houten SL
-order: 6
+order: 34
 uitgelicht: true
 listed: true
 subtitle: Houten SL

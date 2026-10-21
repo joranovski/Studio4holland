@@ -1,6 +1,6 @@
 ---
 title: Drum draaitafel
-order: 8
+order: 12
 uitgelicht: true
 listed: true
 year: 2015

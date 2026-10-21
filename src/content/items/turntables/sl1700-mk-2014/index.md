@@ -1,6 +1,6 @@
 ---
 title: SL1700 MK 2014
-order: 16
+order: 24
 listed: true
 year: 2014
 tags:

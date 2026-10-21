@@ -1,9 +1,9 @@
 ---
-title: custom 230 outlet
-order: 26
+title: custom 220v / 240v inlet
+order: 8
 listed: true
 cover: 230v-outlet.jpeg
 images:
 - src: 230v-outlet.jpeg
-metaTitle: custom 220v / 240v inlet
+- src: 20181004_130309.jpg
 ---

@@ -1,6 +1,6 @@
 ---
 title: Metalen draaitafel
-order: 21
+order: 18
 listed: true
 cover: custom-metal-turntable-hextech.jpeg
 images:

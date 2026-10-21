@@ -1,6 +1,6 @@
 ---
 title: SL 1200 MK one
-order: 15
+order: 23
 uitgelicht: true
 listed: true
 cover: 2015-01-24-15.00.21.jpg

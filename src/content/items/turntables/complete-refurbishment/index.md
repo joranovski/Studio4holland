@@ -1,6 +1,6 @@
 ---
 title: Compleet gereviseerd
-order: 14
+order: 7
 listed: true
 cover: dsc_3210.jpg
 images:

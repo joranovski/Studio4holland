@@ -1,6 +1,6 @@
 ---
 title: Luidspreker herbouw
-order: 2
+order: 4
 forSale: true
 listed: true
 year: 2013

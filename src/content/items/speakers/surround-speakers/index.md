@@ -1,6 +1,6 @@
 ---
 title: Surround speakers
-order: 7
+order: 9
 listed: true
 cover: dsc_2554.jpg
 images:
